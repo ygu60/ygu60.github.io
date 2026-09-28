@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jimmy Gu | Data Analyst &amp; Engineer</title>
+  <meta name="description" content="Jimmy Gu: physics (biophysics) student at WashU building data pipelines, statistical models, and analytics dashboards." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="nav">
+    <div class="wrap nav-inner">
+      <a href="#top" class="logo">JG<span>.</span></a>
+      <nav>
+        <a href="#projects">Projects</a>
+        <a href="#experience">Experience</a>
+        <a href="#skills">Skills</a>
+        <a href="#contact">Contact</a>
+        <a href="assets/Jimmy_Gu_Resume.pdf" class="btn btn-sm" target="_blank" rel="noopener">Resume</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <!-- HERO -->
+    <section class="hero wrap">
+      <p class="eyebrow mono">Data Analyst · Data / Research Engineer</p>
+      <h1>Hi, I'm Jimmy Gu.<br /><span class="muted">I turn messy real-world data into models people can trust.</span></h1>
+      <p class="lead">
+        I study physics with a biophysics specialization at Washington University in St. Louis, graduating December 2026.
+        I build end-to-end pipelines, from instrument control and data collection through statistical modeling to dashboards and reports.
+        I also care about validation: out-of-sample testing, negative controls, and documenting what <em>didn't</em> work.
+      </p>
+      <div class="cta">
+        <a href="#projects" class="btn">See my work</a>
+        <a href="https://github.com/ygu60" class="btn btn-ghost" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://www.linkedin.com/in/jimmy-yufan-gu" class="btn btn-ghost" target="_blank" rel="noopener">LinkedIn</a>
+      </div>
+      <ul class="stats">
+        <li><strong>3.83</strong><span>GPA · WashU Dean's List</span></li>
+        <li><strong>1,000+</strong><span>donor records analyzed for a nonprofit</span></li>
+        <li><strong>982</strong><span>image research dataset built</span></li>
+        <li><strong>10 yrs</strong><span>running a nonprofit I founded</span></li>
+      </ul>
+    </section>
+
+    <!-- PROJECTS -->
+    <section id="projects" class="wrap section">
+      <h2 class="section-title"><span class="mono">01</span> Selected Projects</h2>
+
+      <article class="project">
+        <div class="project-media"><img src="assets/img/quant-equity.png" alt="Out-of-sample equity curves comparing strategies to SPY" loading="lazy" class="contain" /></div>
+        <div class="project-body">
+          <p class="tag mono">Data Engineering · Statistics · ML</p>
+          <h3>Quant Alpha Research Pipeline</h3>
+          <p>
+            A research and backtesting pipeline in Python for statistical trading strategies, using 10 years of real market data (2016–2026, 23 names).
+            It pulls and caches data from Yahoo Finance and cleans up delistings and ticker reassignments. From there it runs vectorized backtests
+            with look-ahead protection and transaction costs, then applies walk-forward, out-of-sample validation.
+          </p>
+          <ul class="bullets">
+            <li>Best strategy: short-term reversal with volatility targeting and a regime gate. It reached an <strong>out-of-sample Sharpe of 0.44</strong> (PSR 0.91, max drawdown −16.8%). I cross-checked it against an independent Markov-switching model.</li>
+            <li>Rejected an overfit variant that flipped from strongly positive to strongly negative when the lookback window changed.</li>
+            <li>Tested ML models (Ridge, Random Forest, Gradient Boosting, and a PyTorch MLP) using purged walk-forward CV and a <strong>shuffled-label permutation test</strong> as a negative control. None of them beat the noise floor, and I documented them as honest negative results.</li>
+            <li>Includes unit tests for the backtest engine, the risk overlay, and feature causality, plus a written research memo.</li>
+          </ul>
+          <p class="stack mono">Python · pandas · NumPy · scikit-learn · PyTorch · statsmodels · matplotlib</p>
+          <a class="link" href="https://github.com/ygu60/quant-alpha-research" target="_blank" rel="noopener">View repo →</a>
+        </div>
+      </article>
+
+      <article class="project reverse">
+        <div class="project-media dash-mock" aria-hidden="true">
+          <div class="dm-head">📊 Donor Insights Dashboard</div>
+          <div class="dm-kpis"><span>Retention</span><span>Cohorts</span><span>Demographics</span><span>Campaigns</span></div>
+          <div class="dm-bars"><i style="height:40%"></i><i style="height:65%"></i><i style="height:52%"></i><i style="height:80%"></i><i style="height:70%"></i><i style="height:90%"></i><i style="height:60%"></i></div>
+        </div>
+        <div class="project-body">
+          <p class="tag mono">Data Analytics · Dashboards · Consulting</p>
+          <h3>Crime Victim Center Donor Insights Dashboard</h3>
+          <p>
+            I built this multi-page Streamlit app with Consult Your Community (WashU) for a St. Louis crime victim advocacy nonprofit.
+            Staff upload their raw donation exports and get interactive analytics right away. They don't need a spreadsheet expert.
+          </p>
+          <ul class="bullets">
+            <li>Covers <strong>donor retention</strong> (new vs. returning), <strong>cohort analysis</strong>, donor demographics, and fundraising campaign evaluation.</li>
+            <li>Analyzed <strong>1,000+ donors</strong> over several years of giving. I found donor trends and turned them into outreach recommendations for the client.</li>
+          </ul>
+          <p class="stack mono">Python · Streamlit · pandas · Altair · matplotlib</p>
+          <a class="link" href="https://github.com/ygu60/CYC2025SP" target="_blank" rel="noopener">View repo →</a>
+        </div>
+      </article>
+
+      <article class="project">
+        <div class="project-media"><img src="assets/img/odmr-ridgeline.png" alt="ODMR contrast spectra splitting as magnetic field increases" loading="lazy" class="contain" /></div>
+        <div class="project-body">
+          <p class="tag mono">Instrumentation · Data Pipeline · Signal Processing</p>
+          <h3>ODMR Automated Acquisition &amp; Analysis Pipeline</h3>
+          <p>
+            An end-to-end pipeline for an optically detected magnetic resonance experiment on NV centers. It talks directly to lab hardware
+            (a Keysight oscilloscope and function generator) over PyVISA/SCPI and captures thousands of triggered sweeps.
+            Then it filters, despikes, calibrates, and averages the signal to produce clean spectra.
+          </p>
+          <ul class="bullets">
+            <li>Collected ~<strong>10,000 real sweeps</strong> across 10 magnetic-field conditions, and wrote a standalone diagnostic tool to debug trigger problems without risking a run.</li>
+            <li>Built an adaptive N-Lorentzian fit that detects peaks automatically. It replaced two fixed-model fits that failed, and I documented why each one failed.</li>
+            <li>Produced reproducible figures (small multiples, ridgelines, 3D terrain), a full uncertainty analysis, and a LaTeX paper.</li>
+          </ul>
+          <p class="stack mono">Python · PyVISA · SciPy · NumPy · matplotlib · LaTeX</p>
+          <a class="link" href="https://github.com/ygu60/ODMR-Phys322-Sweep-Control" target="_blank" rel="noopener">View repo →</a>
+        </div>
+      </article>
+
+      <article class="project reverse">
+        <div class="project-media"><img src="assets/img/seg-graphcut.png" alt="Graph-cut segmentation of a mosaic artwork" loading="lazy" /></div>
+        <div class="project-body">
+          <p class="tag mono">Machine Learning · Computer Vision · Research</p>
+          <h3>Neuroaesthetics: Predicting Aesthetic Ratings of Mosaic Art</h3>
+          <p>
+            An undergraduate research project at WashU (Jan–Aug 2025) that modeled how people perceive mosaic art computationally.
+            I built the dataset, engineered features, and ran the statistical modeling.
+          </p>
+          <ul class="bullets">
+            <li>Built a dataset of <strong>982 images</strong> with multi-level statistical and segmentation features.</li>
+            <li>Used <strong>LASSO regression</strong>, entropy measures, and spectral analysis to find which features predict aesthetic ratings.</li>
+            <li>Compared segmentation methods (SAM2 and kernel graph cuts) for extracting features at the tile level and at 60+ semantic levels.</li>
+            <li>Presented an abstract at the Spring 2026 Undergraduate Research Symposium.</li>
+          </ul>
+          <p class="stack mono">Python · MATLAB · SAM2 · scikit-learn · image processing</p>
+        </div>
+      </article>
+    </section>
+
+    <!-- EXPERIENCE -->
+    <section id="experience" class="wrap section">
+      <h2 class="section-title"><span class="mono">02</span> Experience</h2>
+      <ol class="timeline">
+        <li>
+          <div class="t-date mono">Jan 2024 – Aug 2026</div>
+          <div>
+            <h4>Consultant · Consult Your Community (WashU)</h4>
+            <p>Analyzed fundraising data for 1,000+ donors at a crime victim advocacy nonprofit and built their donor analytics dashboard. I also supported social media campaigns for a local business, and worked across 6 student consulting teams.</p>
+          </div>
+        </li>
+        <li>
+          <div class="t-date mono">Jan 2025 – Aug 2025</div>
+          <div>
+            <h4>Undergraduate Researcher · Neuroaesthetics Lab, WashU</h4>
+            <p>Built ML and statistical models of aesthetic perception on a 982-image dataset, using LASSO, entropy and spectral features, and SAM2 segmentation.</p>
+          </div>
+        </li>
+        <li>
+          <div class="t-date mono">Jun 2023 – Jun 2024</div>
+          <div>
+            <h4>Cadet · United States Air Force Academy</h4>
+            <p>Directed mission planning for 100+ cadets and designed simulation-based training programs while carrying a full course load. Made the Superintendent's List.</p>
+          </div>
+        </li>
+        <li>
+          <div class="t-date mono">Dec 2012 – Jun 2023</div>
+          <div>
+            <h4>Founder &amp; Board Member · Journey of Hope</h4>
+            <p>Founded and ran a nonprofit for 10+ years. Raised $15,000+, coordinated up to 20 volunteers, and led 4 strategic initiatives.</p>
+          </div>
+        </li>
+      </ol>
+
+      <div class="edu">
+        <div>
+          <h4>Washington University in St. Louis</h4>
+          <p>B.A. Physics, Biophysics specialization · Biology minor · GPA 3.83 · Expected Dec 2026</p>
+        </div>
+        <div>
+          <h4>United States Air Force Academy</h4>
+          <p>B.S. coursework (transferred) · GPA 3.90+ · Superintendent's List</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SKILLS -->
+    <section id="skills" class="wrap section">
+      <h2 class="section-title"><span class="mono">03</span> Skills</h2>
+      <div class="skills">
+        <div><h4>Languages</h4><p>Python, SQL, MATLAB, LaTeX</p></div>
+        <div><h4>Data &amp; ML</h4><p>pandas, NumPy, SciPy, scikit-learn, PyTorch, statsmodels</p></div>
+        <div><h4>Analytics &amp; Viz</h4><p>Streamlit, Altair, matplotlib, Excel, dashboards, reporting</p></div>
+        <div><h4>Methods</h4><p>Regression (LASSO/Ridge), walk-forward and purged CV, permutation tests, curve fitting, uncertainty analysis, signal processing</p></div>
+        <div><h4>Engineering</h4><p>Git/GitHub, unit testing, PyVISA/SCPI instrument control, reproducible pipelines</p></div>
+        <div><h4>Professional</h4><p>Leadership, client consulting, project management, technical writing</p></div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact" class="wrap section contact">
+      <h2 class="section-title"><span class="mono">04</span> Let's talk</h2>
+      <p class="lead">I'm looking for <strong>data analyst</strong> and <strong>data/research engineering</strong> roles. The best way to reach me is email.</p>
+      <div class="cta">
+        <a href="mailto:g.jimmy@wustl.edu" class="btn">g.jimmy@wustl.edu</a>
+        <a href="https://www.linkedin.com/in/jimmy-yufan-gu" class="btn btn-ghost" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://github.com/ygu60" class="btn btn-ghost" target="_blank" rel="noopener">GitHub</a>
+        <a href="assets/Jimmy_Gu_Resume.pdf" class="btn btn-ghost" target="_blank" rel="noopener">Resume (PDF)</a>
+      </div>
+      <p class="aside">Outside of work: I run about 50 miles a week and train in judo and Brazilian jiu-jitsu.</p>
+    </section>
+  </main>
+
+  <footer class="wrap footer mono">© 2026 Jimmy Gu</footer>
+</body>
+</html>
