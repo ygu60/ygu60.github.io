@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Stress-Testing Trading Strategies Until Only One Survived | Jimmy Gu</title>
+  <meta name="description" content="A walk-forward backtesting study on 10 years of real market data: one strategy survived (Sharpe 0.44, max drawdown -16.8%, half the S&amp;P 500's), and the ideas that failed are documented." />
+  <link rel="canonical" href="https://ygu60.github.io/projects/quant-alpha.html" />
+  <link rel="icon" href="../favicon.ico" sizes="32x32" />
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+  <meta property="og:type" content="article" />
+  <meta property="og:site_name" content="Jimmy Gu" />
+  <meta property="og:title" content="Stress-testing trading strategies until only one survived | Jimmy Gu" />
+  <meta property="og:description" content="A walk-forward backtesting study on 10 years of real market data: one strategy survived (Sharpe 0.44, worst drop 16.8%, half the S&amp;P 500's), and every failed idea is documented." />
+  <meta property="og:url" content="https://ygu60.github.io/projects/quant-alpha.html" />
+  <meta property="og:image" content="https://ygu60.github.io/assets/img/quant-alpha/risk-return-map.png" />
+  <meta property="og:image:alt" content="Scatter chart of the main strategies tested, out-of-sample Sharpe ratio against worst drawdown, with the final strategy starred." />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/open-props.min.css" />
+  <link rel="stylesheet" href="../styles.css" />
+  <style>
+    .fig a.zoom { display: block; cursor: zoom-in; }
+    .tap-hint { display: none; }
+    @media (max-width: 860px) { .tap-hint { display: inline; } }
+    .deep .tbl { overflow-x: auto; margin: var(--size-2) 0 var(--size-3); }
+    .deep table { width: 100%; border-collapse: collapse; font-size: 0.86rem; }
+    .deep th, .deep td { padding: 6px 8px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+    .deep th { font-weight: 600; color: var(--ink-2); font-size: 0.78rem; }
+    .deep td + td, .deep th + th { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+    .deep tr.final td { font-weight: 600; background: #fff7e0; }
+    .deep tr.sub td { color: var(--ink-2); }
+  </style>
+</head>
+<body>
+  <div class="bg-blobs" aria-hidden="true"><span></span><span></span><span></span></div>
+
+  <header class="nav">
+    <div class="wrap nav-inner">
+      <a href="../index.html" class="logo">Jimmy Gu</a>
+      <nav>
+        <a href="../index.html#work">Work</a>
+        <a href="../index.html#about">About</a>
+        <a href="../index.html#contact">Contact</a>
+        <a href="../assets/Jimmy_Gu_Portfolio.pdf" download>PDF portfolio</a>
+        <a href="../assets/Jimmy_Gu_Resume.pdf" class="btn btn-sm" target="_blank" rel="noopener">Resume ↗</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap pp">
+    <a href="../index.html#work" class="back">← All projects</a>
+
+    <!-- 1 + 2. TITLE & OUTCOME -->
+    <header class="pp-hero">
+      <div>
+        <p class="kicker">Quant research · Solo · 2026</p>
+        <h1>Stress-testing trading strategies until only one survived</h1>
+        <p class="pp-outcome">I led a study of trading ideas on 10 years of real stock prices. The survivor, a risk-controlled reversal strategy, earned a <strong>Sharpe ratio of 0.44</strong> (return per unit of risk) with a <strong>worst drop of 16.8%</strong>, half the S&amp;P 500's, but returned less than the index. The failures taught me to trust only results that hold across settings.</p>
+        <dl class="pp-facts">
+          <div><dt>My role</dt><dd>Research lead: set the goals and pass bars, signed off on every stage</dd></div>
+          <div><dt>Team</dt><dd>Solo</dd></div>
+          <div><dt>Timeline</dt><dd>Sep 19 to 20, 2026</dd></div>
+          <div><dt>Tools</dt><dd>Python, pandas, scikit-learn, PyTorch, statsmodels</dd></div>
+        </dl>
+        <div class="actions">
+          <a class="btn" href="https://github.com/ygu60/quant-alpha-research" target="_blank" rel="noopener">Code &amp; write-up ↗</a>
+        </div>
+      </div>
+      <figure class="fig fig-hero">
+        <div class="annot">
+          <a class="zoom" href="../assets/img/quant-alpha/risk-return-map.png" target="_blank" rel="noopener">
+            <img src="../assets/img/quant-alpha/risk-return-map.png" width="1600" height="1178" alt="Scatter of out-of-sample Sharpe ratio against max drawdown for the main strategies tested. An arrow path runs from the raw reversal signal (Sharpe 0.45, drawdown -75.6%) to the risk-managed version (0.23, -25.5%) to the final regime-gated strategy (0.44, -16.8%). SPY sits at 0.85 and -33.7%. Rejected strategies (re-tuned reversal, pairs, turn-of-month, random forest, neural net) sit near or below zero." />
+          </a>
+          <span class="pin" style="left:21.5%;top:49.2%">1</span>
+          <span class="pin" style="left:64.5%;top:47.5%">2</span>
+          <span class="pin" style="left:83.4%;top:43.3%">3</span>
+          <span class="pin" style="left:56.1%;top:16.6%">4</span>
+        </div>
+        <figcaption><b>Figure 1.</b> Every main strategy, scored out of sample after trading costs (plotted from the memo's results tables). Gray points were rejected.<span class="tap-hint"> Tap a figure to enlarge it.</span>
+          <ol>
+            <li>Raw reversal signal (buy recent losers): Sharpe 0.45, but a 75.6% worst drop.</li>
+            <li>Risk overlay: worst drop cut to 25.5%, Sharpe halved to 0.23.</li>
+            <li>Sitting out the calmest markets: Sharpe 0.44 at a 16.8% drop, the final strategy.</li>
+            <li>Holding the S&amp;P 500 (SPY): higher Sharpe (0.85), deeper drop (33.7%).</li>
+          </ol>
+        </figcaption>
+      </figure>
+    </header>
+
+    <div class="kpis">
+      <div><strong>0.44</strong><span>Out-of-sample Sharpe, after costs</span></div>
+      <div><strong>−16.8%</strong><span>Max drawdown (S&amp;P 500: −33.7%)</span></div>
+      <div><strong>37</strong><span>Walk-forward test windows, 9+ years</span></div>
+      <div><strong>29</strong><span>Unit tests guarding the pipeline</span></div>
+    </div>
+
+    <!-- 3. EXPERIENCE, LEARNING & SKILLS -->
+    <section class="pp-section">
+      <h2><small>My contribution</small>What I did</h2>
+      <div class="pp-split">
+        <figure class="fig">
+          <a class="zoom" href="../assets/img/quant-alpha/architecture.png" target="_blank" rel="noopener">
+            <picture>
+              <source media="(max-width: 600px)" srcset="../assets/img/quant-alpha/architecture-m.png" width="800" height="2088" />
+              <img src="../assets/img/quant-alpha/architecture.png" width="1600" height="1801" loading="lazy" alt="Pipeline diagram: 1 fetch and cache, 2 clean, then a walk-forward loop containing 3 signal, 4 risk overlay, 5 regime gate and 6 backtest, followed by 7 score and 8 report. Each stage lists its Python modules and the unit tests that guard it." />
+            </picture>
+          </a>
+          <figcaption><b>Figure 2.</b> The pipeline, stage by stage, with the Python modules behind each (drawn from the repo's layout and call order). Stages 3 to 6 repeat in every walk-forward window; unit tests are listed by the stage they guard.</figcaption>
+        </figure>
+        <div class="pp-text">
+          <ul>
+            <li><strong>Set</strong> the goal: a strategy a small account could run, tested the way a quant researcher would before risking money.</li>
+            <li><strong>Directed</strong> an AI coding agent (Claude Code) to build a Python pipeline: data cleaning, a realistic backtest, walk-forward testing and a risk overlay.</li>
+            <li><strong>Directed</strong> four follow-up studies, from volatility filters to ML signal searches; a library survey caught a wrong Sortino formula.</li>
+            <li><strong>Set</strong> the bar the ML search had to clear, before it ran.</li>
+            <li><strong>Signed off</strong> on each stage through three pull requests, backed by 29 unit tests.</li>
+          </ul>
+          <ul class="tags">
+            <li><a href="../index.html?skill=Python#work">Python</a></li><li><a href="../index.html?skill=pandas#work">pandas</a></li><li><a href="../index.html?skill=NumPy#work">NumPy</a></li><li><a href="../index.html?skill=scikit-learn#work">scikit-learn</a></li><li><a href="../index.html?skill=PyTorch#work">PyTorch</a></li><li><a href="../index.html?skill=statsmodels#work">statsmodels</a></li><li><a href="../index.html?skill=Git#work">Git</a></li>
+            <li><a href="../index.html?skill=Walk-forward%20validation#work">Walk-forward validation</a></li><li><a href="../index.html?skill=Permutation%20testing#work">Permutation testing</a></li><li><a href="../index.html?skill=Unit%20testing#work">Unit testing</a></li><li><a href="../index.html?skill=Data%20cleaning#work">Data cleaning</a></li><li><a href="../index.html?skill=Time%20series#work">Time series</a></li><li><a href="../index.html?skill=AI-assisted%20development#work">AI-assisted development</a></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. MOTIVATION & CONSTRAINTS -->
+    <section class="pp-section">
+      <h2><small>Motivation</small>Why it mattered</h2>
+      <div class="pp-split flip">
+        <figure class="fig">
+          <a class="zoom" href="../assets/img/quant-alpha/data-hygiene.png" target="_blank" rel="noopener">
+            <picture>
+              <source media="(max-width: 600px)" srcset="../assets/img/quant-alpha/data-hygiene-m.png" width="800" height="1409" />
+              <img src="../assets/img/quant-alpha/data-hygiene.png" width="1600" height="1140" loading="lazy" alt="Grid of 30 candidate stock tickers in five sectors. 23 are kept; 7 are struck through with a reason: five returned HTTP 404 (CMA, SNV, PDCO, AMED, CIVI), one was a reassigned ticker (WBS), one had too little history (CIR)." />
+            </picture>
+          </a>
+          <figcaption><b>Figure 3.</b> Real data is messy: of 30 candidate stocks, 7 were dropped with the reason logged, not silently filled in (drawn from the memo's data section).</figcaption>
+        </figure>
+        <div class="pp-text">
+          <p><strong>Objective:</strong> test whether a small account can capture a well-documented market pattern too small for large funds, following a quant researcher's process from a literature hypothesis to paper trading.</p>
+          <p><strong>Why it is hard:</strong> backtests are easy to fool. Tune on the reported data, or leak future prices into a signal, and results vanish live. Only out-of-sample results count.</p>
+        </div>
+      </div>
+      <dl class="constraints">
+        <div><dt>Capital</dt><dd>Sized for a few thousand dollars; no leverage</dd></div>
+        <div><dt>Data</dt><dd>Free public prices (Yahoo Finance)</dd></div>
+        <div><dt>Costs</dt><dd>10 bps (0.10%) per trade, likely optimistic</dd></div>
+        <div><dt>ML bar, set in advance</dt><dd>Clearly beat SPY, or very stable with a small worst drop (coded as: Sharpe 25% above SPY's, or worst drop under 10% with Sharpe above 0.3)</dd></div>
+      </dl>
+    </section>
+
+    <!-- RESULTS AGAINST THE OBJECTIVE -->
+    <section class="pp-section">
+      <h2><small>Results</small>How it measured up</h2>
+      <div class="pp-results">
+        <figure class="fig">
+          <div class="annot">
+            <a class="zoom" href="../assets/img/quant-alpha/equity-curves.png" target="_blank" rel="noopener">
+              <img src="../assets/img/quant-alpha/equity-curves.png" width="1350" height="750" loading="lazy" alt="Out-of-sample growth of one dollar, 2017 to 2026: the universe and SPY buy-and-hold lines climb to about 5.3x and 3.6x, the final regime-gated strategy grows slowly to about 1.4x, the same strategy without the gate to about 1.2x, and the ML strategy ends below 1 (about 0.8)." />
+            </a>
+            <span class="pin" style="left:60.5%;top:71.5%">1</span>
+            <span class="pin" style="left:24%;top:70%">2</span>
+            <span class="pin" style="left:83.3%;top:43.2%">3</span>
+            <span class="pin" style="left:93.9%;top:86%">4</span>
+          </div>
+          <figcaption><b>Figure 4.</b> Growth of $1 on out-of-sample days (mid-2017 to 2026), after costs; real output of the pipeline.
+            <ol>
+              <li>Final strategy (yellow): 3.6% a year with shallow dips.</li>
+              <li>March 2020: the same 23 stocks, simply held (green), bottomed 57% below their 2018 peak.</li>
+              <li>SPY: far more growth, with a 33.7% drawdown.</li>
+              <li>Best ML model, same risk controls: lost money. Rejected.</li>
+            </ol>
+          </figcaption>
+        </figure>
+        <div class="pp-text">
+          <ul class="goals cols">
+            <li><span class="v met">✓ Met</span><strong>Idea from the literature.</strong> Short-term reversal held up out of sample (Sharpe 0.45).</li>
+            <li><span class="v met">✓ Met, with limits</span><strong>Realistic backtest.</strong> Signal delay and trading costs, but flat costs and survivorship bias.</li>
+            <li><span class="v part">◐ Partly</span><strong>Out-of-sample test.</strong> Some filter settings were picked on the same data; probabilistic Sharpe 0.91, short of 0.95.</li>
+            <li><span class="v met">✓ Met</span><strong>Honest reporting.</strong> Every failed idea is documented.</li>
+            <li><span class="v no">○ Not met</span><strong>ML search bar.</strong> The best model lost money once risk-managed and beat only 4 of 5 shuffled-label noise runs.</li>
+            <li><span class="v no">○ Not met</span><strong>Beat the market.</strong> SPY had a higher Sharpe (0.85). Next step: a quarter of paper trading.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="lesson"><h3>What I learned</h3>
+        <p><strong>One good number is not evidence.</strong> A volatility filter that scored 0.32 at one lookback flipped to −0.06 at another (Figure 5). I now check results across more than one reasonable setting, and test risk code on long, real data: three silent bugs showed up only in the full backtest (see Methods).</p>
+      </div>
+    </section>
+
+    <!-- 5. TECHNICAL DETAILS -->
+    <section class="pp-section">
+      <h2><small>Technical details</small>How it was tested</h2>
+      <div class="pp-gallery">
+        <figure class="fig">
+          <div class="annot">
+            <a class="zoom" href="../assets/img/quant-alpha/regime-robustness.png" target="_blank" rel="noopener">
+              <img src="../assets/img/quant-alpha/regime-robustness.png" width="1600" height="1000" loading="lazy" alt="Dumbbell chart of Sharpe ratios for regime filters at two lookback windows. Skip-the-calmest-third scores 0.44 and 0.42. Trade-only-the-most-volatile-third scores 0.32 at 504 days but -0.06 at 252 days. Single-window gates: Markov-switching 0.13, high vol plus downtrend 0.17, downtrend only 0.09. A vertical line marks the no-gate baseline of 0.23." />
+            </a>
+            <span class="pin" style="left:53.1%;top:25.8%">1</span>
+            <span class="pin" style="left:53.8%;top:49%">2</span>
+            <span class="pin" style="left:43.4%;top:59.5%">3</span>
+          </div>
+          <figcaption><b>Figure 5.</b> Robustness check: the two volatility-tertile filters were each scored at two lookback windows; the other gates at one (drawn from the memo's regime table).
+            <ol>
+              <li>“Skip the calmest third of days” held at both (0.44, 0.42): kept.</li>
+              <li>“Trade only the most volatile third”: 0.32, then −0.06. Rejected.</li>
+              <li>A Markov-switching model of market states: 0.13, below no gate (0.23).</li>
+            </ol>
+          </figcaption>
+        </figure>
+        <figure class="fig">
+          <div class="annot">
+            <a class="zoom" href="../assets/img/quant-alpha/window-sharpe.png" target="_blank" rel="noopener">
+              <img src="../assets/img/quant-alpha/window-sharpe.png" width="1600" height="919" loading="lazy" alt="Bar chart of the final strategy's Sharpe ratio in each of 37 walk-forward test quarters from mid-2017 to 2026: 21 positive bars, 14 negative bars, and two empty quarters in mid-2023 shaded as in cash with the gate off. The deepest bar, about -3.8, is the quarter ending March 2020." />
+            </a>
+            <span class="pin" style="left:39.7%;top:78.3%">1</span>
+            <span class="pin" style="left:66.1%;top:76.2%">2</span>
+          </div>
+          <figcaption><b>Figure 6.</b> The final strategy's Sharpe in each of its 37 test quarters: 21 positive, 14 negative, and at least one positive quarter in every year (redrawn from the pipeline's chart).
+            <ol>
+              <li>Worst: Dec 2019 to Mar 12, 2020, as the COVID crash began.</li>
+              <li>Mid-2023: the gate kept the strategy in cash.</li>
+            </ol>
+          </figcaption>
+        </figure>
+      </div>
+
+      <details class="deep"><summary>Methods in depth</summary>
+        <div class="pp-text">
+          <h3>Strategy and risk controls</h3>
+          <p>Short-term reversal is a decades-old finding (Jegadeesh 1990; Lehmann 1990): stocks that fell hardest over the last few days tend to bounce. Each day the pipeline ranks the 23 stocks by 3-day return and holds the five biggest losers at equal weight, long-only. The risk overlay scales the book toward 10% annualized volatility (20-day lookback, never above 1x), caps any one stock at 25% and total exposure at 100%, and goes to cash if the signal's own drawdown passes 30%, re-entering once it recovers to within 10%. The regime gate ranks SPY's 20-day realized volatility against its trailing 252-day history and stays out on days in the calmest third, which left the strategy active on 63% of out-of-sample days.</p>
+          <h3>Pipeline and data</h3>
+          <ul>
+            <li><strong>Cleaning (stage 2 in Figure 2):</strong> the pass dropped 7 of 30 tickers and logged why (Figure 3), leaving 23 stocks × 2,583 trading days.</li>
+            <li><strong>The loop:</strong> within each window, parameters never see that window's test data, and only test-day returns are reported.</li>
+            <li><strong>Bugs the real data exposed (stages 4 and 6):</strong> the first drawdown kill switch fired once in December 2018 and then sat in cash for the remaining seven years, producing a fake-good Sharpe of 0.46. The first fix flapped on and off repeatedly, and a scoring step silently erased the overlay's cash positions. All three surfaced only when the full multi-year backtest ran and the exposure numbers were checked for sense; all three are fixed, and the kill-switch bugs have regression tests. Cross-checking against the empyrical library also caught a wrong Sortino formula.</li>
+          </ul>
+          <h3>Validation</h3>
+          <ul>
+            <li><strong>Walk-forward:</strong> 252-day history and 63-day test windows, stepping by 63 days, so the 37 test windows tile mid-2017 to 2026 with no gaps or overlap. The headline strategy runs the same fixed parameters in every window; the history slice is used only where a method needs fitting (the nested tuning check, the ML models, pair selection, the Markov model).</li>
+            <li><strong>Nested tuning check:</strong> a 3 × 2 grid (lookback of 2, 3 or 5 days × 15% or 25% of names) picked on each training slice only. It made results worse (Sharpe 0.45 to 0.09), evidence that the untuned default is not a lucky draw.</li>
+            <li><strong>Gate lookback check (Figure 5):</strong> the kept gate scored 0.44 with a 252-day volatility history and 0.42 with a 504-day one. The 504-day version's 0.42 includes Jun 2017 to Jan 2018, before that gate had enough history, when it defaulted to always on; on the days it operated it scored 0.31 (252-day gate: 0.44, no gate: 0.13, same days).</li>
+            <li><strong>Probabilistic Sharpe Ratio</strong> (Bailey and López de Prado 2012): the chance the true Sharpe is above zero, given sample size, skew and fat tails. The final strategy's is 0.91.</li>
+            <li><strong>ML guardrails:</strong> 15 trailing-window features (momentum, volatility, RSI, moving-average gap, volume surge, cross-sectional ranks), with a unit test checking that changing future prices never changes any earlier feature value. Training rows whose forward-return label reaches into the test window are purged (López de Prado 2018). Tree-model hyperparameters were fixed and conservative before looking at results; the neural net got only a small, pre-registered 2 × 2 grid.</li>
+            <li><strong>Shuffled-label negative control:</strong> the best tree model, a random forest predicting 10-day returns, was retrained five times on shuffled labels, which destroys any real signal. Its real Sharpe of 0.35 sat at only the 80th percentile of those noise runs (noise mean −0.03); the best neural net sat at the 75th percentile of four runs. A real edge should clear something like the 95th. With so few runs, this is a strong hint, not a precise p-value.</li>
+            <li><strong>Bigger models did not find more signal:</strong> the other two model types scored lower still, and the neural net did worst once risk-managed (Sharpe −0.18). That points to the information in daily price data, not the model, as the bottleneck.</li>
+          </ul>
+          <h3>Against the market</h3>
+          <p>Before the gate, the strategy's returns were 0.70 correlated with holding the same 23 stocks (the gate only changes when that book is held), so it is not a diversifier. It would also fail the ML search's bar, which needed a Sharpe above 1.06, or a worst drop under 10% with a Sharpe above 0.3.</p>
+          <h3>Results table (the data behind Figure 1)</h3>
+          <div class="tbl">
+            <table>
+              <thead><tr><th>Strategy (out of sample, after 10 bps costs)</th><th>Sharpe</th><th>PSR</th><th>Max DD</th></tr></thead>
+              <tbody>
+                <tr class="final"><td>Reversal + risk overlay + regime gate (final)</td><td>0.44</td><td>0.91</td><td>−16.8%</td></tr>
+                <tr><td>Reversal + risk overlay</td><td>0.23</td><td>0.76</td><td>−25.5%</td></tr>
+                <tr><td>Reversal, raw signal</td><td>0.45</td><td>0.91</td><td>−75.6%</td></tr>
+                <tr><td>Reversal, re-tuned each window</td><td>0.09</td><td>0.61</td><td>−78.4%</td></tr>
+                <tr><td>Pairs trading, regional banks</td><td>−0.02</td><td>0.48</td><td>−20.6%</td></tr>
+                <tr><td>Turn-of-month, SPY/IWM/IJR</td><td>0.12</td><td>0.64</td><td>−27.8%</td></tr>
+                <tr><td>Random forest (10-day), risk-managed</td><td>−0.08</td><td>n/a</td><td>−41.3%</td></tr>
+                <tr><td>Neural net (MLP), risk-managed</td><td>−0.18</td><td>n/a</td><td>−50.8%</td></tr>
+                <tr class="sub"><td>Random forest (10-day), no risk overlay</td><td>0.35</td><td>0.85</td><td>−83.1%</td></tr>
+                <tr class="sub"><td>Random forest (5-day), no risk overlay</td><td>0.16</td><td>0.69</td><td>−83.9%</td></tr>
+                <tr class="sub"><td>Ridge regression (5-day), no risk overlay</td><td>0.09</td><td>0.61</td><td>−80.3%</td></tr>
+                <tr class="sub"><td>Gradient boosting (5-day), no risk overlay</td><td>0.06</td><td>0.58</td><td>−75.1%</td></tr>
+                <tr class="sub"><td>Neural net, best of 4 configs, no risk overlay</td><td>0.15</td><td>0.68</td><td>n/a</td></tr>
+                <tr><td>SPY buy &amp; hold, same dates</td><td>0.85</td><td>n/a</td><td>−33.7%</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>The other three neural-net configurations scored 0.07, 0.10 and −0.13 before risk controls. The other regime filters are in Figure 5.</p>
+          <h3>Known limits</h3>
+          <p>Survivorship bias is not corrected: dropping retired tickers means the backtest only sees companies that still exist, which flatters every result. The flat 10 bps cost probably understates spreads on the smallest names, and the backtest assumes trades fill at the closing price. Sharpe ratios use a 0% risk-free rate and idle cash earns nothing in the backtest, so the Sharpe is not an excess return over T-bills. The 37 windows are not 37 independent bets, because market regimes like the 2020 crash span several of them. Finally, some design choices (which volatility filter to keep, how loose to set the kill switch) were made after seeing backtest results on the same data, so the 0.44 likely overstates what to expect live; the memo calls for a third lookback window and at least a quarter of paper trading first.</p>
+        </div>
+      </details>
+    </section>
+
+    <nav class="pp-next">
+      <a href="mosaic-aesthetics.html"><span>← Previous</span><strong>Measuring why people like mosaic art</strong></a>
+      <a href="donor-dashboard.html"><span>Next →</span><strong>A donor dashboard that shows a crime victim nonprofit which donors come back</strong></a>
+    </nav>
+  </main>
+
+  <footer class="wrap footer">
+    <p>© 2026 Jimmy Gu · <a href="mailto:g.jimmy@wustl.edu">g.jimmy@wustl.edu</a> · <a href="https://www.linkedin.com/in/jimmy-yufan-gu" target="_blank" rel="noopener">LinkedIn ↗</a> · <a href="https://github.com/ygu60" target="_blank" rel="noopener">GitHub ↗</a> · <a href="../assets/Jimmy_Gu_Portfolio.pdf" download>PDF portfolio ↓</a></p>
+    <p>Outside of work: running about 50 miles a week, judo, and BJJ.</p>
+  </footer>
+</body>
+</html>

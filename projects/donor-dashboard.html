@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>A Donor Dashboard That Shows a Crime Victim Nonprofit Which Donors Come Back | Jimmy Gu</title>
+  <meta name="description" content="A five-page Streamlit dashboard that turns a St. Louis crime victim nonprofit's GiveButter donation exports into fundraising-trend, retention, cohort, top-donor, geographic and campaign views, built on my first-pass analysis of its donor records." />
+  <link rel="canonical" href="https://ygu60.github.io/projects/donor-dashboard.html" />
+  <link rel="icon" href="../favicon.ico" sizes="32x32" />
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+  <meta property="og:type" content="article" />
+  <meta property="og:site_name" content="Jimmy Gu" />
+  <meta property="og:title" content="A donor dashboard that shows a crime victim nonprofit which donors come back | Jimmy Gu" />
+  <meta property="og:description" content="A five-page Streamlit dashboard that turns GiveButter donation exports into fundraising-trend, retention, cohort, top-donor, map and campaign views for a St. Louis nonprofit. Screenshots use synthetic demo data." />
+  <meta property="og:url" content="https://ygu60.github.io/projects/donor-dashboard.html" />
+  <meta property="og:image" content="https://ygu60.github.io/assets/img/donor-dashboard/home-upload.png" />
+  <meta property="og:image:alt" content="Home page of the donor dashboard running on synthetic demo data, with a file uploader and a cumulative fundraising chart." />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/open-props.min.css" />
+  <link rel="stylesheet" href="../styles.css" />
+  <style>
+    .fig a.zoom { display: block; cursor: zoom-in; }
+    .deep code { font-family: var(--mono); font-size: 0.85em; background: var(--bg); padding: 1px 5px; border-radius: 4px; }
+    /* Motivation: narrower figure column so the Pareto screenshot displays near its native size */
+    @media (min-width: 861px) { .pp-split.flip.fig-narrow { grid-template-columns: 1.5fr 1fr; } }
+    /* CVC 2022 revenue mix (public annual report): one stacked bar, emphasis on the donor share */
+    .revmix { margin-top: var(--size-4); }
+    .revmix .rm-t { font-size: 0.82rem; font-weight: 600; color: var(--ink); margin-bottom: 6px; }
+    .rm-bar { display: flex; gap: 2px; height: 22px; border-radius: 4px; overflow: hidden; background: var(--surface); }
+    .rm-bar span { display: block; min-width: 0; }
+    .rm-bar .d { background: #3d5afe; }
+    .rm-bar .f { background: #ff8a3d; }
+    .rm-bar .g { background: #dcd9d0; color: var(--ink); font-size: 0.75rem; font-weight: 500; line-height: 22px; padding-left: 8px; white-space: nowrap; }
+    .pp-text ul.rm-key { list-style: none; display: flex; flex-wrap: wrap; gap: 2px 14px; padding-left: 0; margin-top: 6px; }
+    .pp-text ul.rm-key li { font-size: 0.82rem; color: var(--ink-2); }
+    .rm-key i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 5px; vertical-align: -1px; }
+    .rm-src { font-size: 0.78rem; color: var(--ink-2); margin-top: 4px; }
+    /* Figures 5 and 6: phones get stacked images (cleaning-m.png, zip-map-m.png) with their own pin positions */
+    .pin.m { display: none; }
+    @media (max-width: 600px) { .pin.d { display: none; } .pin.m { display: grid; } }
+  </style>
+</head>
+<body>
+  <div class="bg-blobs" aria-hidden="true"><span></span><span></span><span></span></div>
+
+  <header class="nav">
+    <div class="wrap nav-inner">
+      <a href="../index.html" class="logo">Jimmy Gu</a>
+      <nav>
+        <a href="../index.html#work">Work</a>
+        <a href="../index.html#about">About</a>
+        <a href="../index.html#contact">Contact</a>
+        <a href="../assets/Jimmy_Gu_Portfolio.pdf" download>PDF portfolio</a>
+        <a href="../assets/Jimmy_Gu_Resume.pdf" class="btn btn-sm" target="_blank" rel="noopener">Resume ↗</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap pp">
+    <a href="../index.html#work" class="back">← All projects</a>
+
+    <!-- 1 + 2. TITLE & OUTCOME -->
+    <header class="pp-hero">
+      <div>
+        <p class="kicker">Client analytics · Consult Your Community · 2025</p>
+        <h1>A donor dashboard that shows a crime victim nonprofit which donors come back</h1>
+        <p class="pp-outcome">I analyzed Crime Victim Center (CVC) donor records, found that <strong>a small group of donors gave most of the dollars</strong>, and built a <strong>five-page Streamlit dashboard</strong> that repeats that check, plus retention, map and campaign views, on each new GiveButter export. It <strong>fully covers the brief's donor-ranking goal</strong> and partly covers segmentation, tracking and outreach. A 2026 re-test found four silent bugs: dashboards need tests on known data.</p>
+        <dl class="pp-facts">
+          <div><dt>My role</dt><dd>Built the dashboard (sole committer on the public repo); analyzed CVC's donor data</dd></div>
+          <div><dt>Team</dt><dd>WashU student consultants, Consult Your Community</dd></div>
+          <div><dt>Timeline</dt><dd>Spring 2025; code pushed Apr 13 to 14</dd></div>
+          <div><dt>Tools</dt><dd>Python, pandas, Streamlit, Altair, Plotly, pgeocode</dd></div>
+        </dl>
+        <div class="actions">
+          <a class="btn" href="https://github.com/ygu60/CYC2025SP" target="_blank" rel="noopener">Code ↗</a>
+        </div>
+      </div>
+      <figure class="fig fig-hero">
+        <div class="annot">
+          <a class="zoom" href="../assets/img/donor-dashboard/home-upload.png" target="_blank" rel="noopener">
+            <img src="../assets/img/donor-dashboard/home-upload.png" width="1600" height="1040" alt="Home page of the Crime Victim Center Donor Insights Dashboard. The sidebar holds a GiveButter file uploader with two synthetic demo files and a Files Processed list. The main area shows links to four analysis pages, a green banner reading Data loaded and persistent across pages, and a cumulative Fundraising Over Time chart with a gray selected range labeled From Jan 2024 to Dec 2024: +39.6%." />
+          </a>
+          <span class="pin" style="left:33.4%;top:20.7%">1</span>
+          <span class="pin" style="left:21.6%;top:66.6%">2</span>
+          <span class="pin" style="left:43.2%;top:4.6%">3</span>
+          <span class="pin" style="left:83.1%;top:13.6%">4</span>
+          <span class="pin" style="left:89.1%;top:35.7%">5</span>
+        </div>
+        <figcaption><b>Figure 1.</b> The Home page after an upload. All screenshots run the repo's code on <b>synthetic demo data</b>, not CVC's.
+          <ol>
+            <li>Drop in GiveButter exports, several at once.</li>
+            <li>Every merged file is listed.</li>
+            <li>Links to the four analysis pages.</li>
+            <li>The cleaned table follows the user to every page.</li>
+            <li>Drag to pick a date range; the app labels the growth.</li>
+          </ol>
+        </figcaption>
+      </figure>
+    </header>
+
+    <div class="kpis">
+      <div><strong>6</strong><span>Analyses from one upload: trend, retention, cohorts, top donors, map, campaigns</span></div>
+      <div><strong>5</strong><span>Donor-data goals in CVC's brief</span></div>
+      <div><strong>3 yrs</strong><span>Of campaign totals compared in my first-pass analysis (2022 to 2024)</span></div>
+      <div><strong>8%</strong><span>Of CVC's 2022 revenue from donations and fundraisers</span></div>
+    </div>
+
+    <!-- 3. EXPERIENCE, LEARNING & SKILLS -->
+    <section class="pp-section">
+      <h2><small>My contribution</small>What I built</h2>
+      <div class="pp-split">
+        <figure class="fig">
+          <a class="zoom" href="../assets/img/donor-dashboard/pipeline.png" target="_blank" rel="noopener">
+            <picture>
+              <source media="(max-width: 600px)" srcset="../assets/img/donor-dashboard/pipeline-m.png" width="800" height="1728" />
+              <img src="../assets/img/donor-dashboard/pipeline.png" width="1600" height="1990" loading="lazy" alt="Pipeline diagram. What the app does: 1 Upload GiveButter transaction exports saved as .xlsx, 2 Clean and merge, 3 Share one table across pages through session state, 4 Analyze on five pages (Overview in Home.py; Retention, Cohorts, Demographics and Fundraising in pages/), 5 Act on plain-language guidance. What staff do at each step: drag and drop, nothing, add or remove a file, explore with brushes, sliders, tabs and dropdowns, and plan outreach from what the charts show." />
+            </picture>
+          </a>
+          <figcaption><b>Figure 2.</b> How the app works (drawn from the repo's code). Every analysis page reads the one cleaned table; the staff column is the whole workflow.</figcaption>
+        </figure>
+        <div class="pp-text">
+          <ul>
+            <li><strong>Analyzed</strong> CVC's records first: 2022 to 2024 campaign totals and a pandas Pareto (80/20) analysis of donors.</li>
+            <li><strong>Built</strong> the upload-and-clean step that merges any number of GiveButter exports into one table (Figures 2 and 5).</li>
+            <li><strong>Designed</strong> the retention metrics: returning donors, quarterly churn and cohort heatmaps (Figure 4).</li>
+            <li><strong>Built</strong> a top-donor (80/20) view with an adjustable cutoff (Figure 3).</li>
+            <li><strong>Geocoded</strong> donor ZIP codes onto a map (Figure 6) and <strong>built</strong> year-over-year campaign comparisons.</li>
+            <li><strong>Wrote</strong> plain-language explainers beside the charts for CVC staff.</li>
+          </ul>
+          <ul class="tags">
+            <li><a href="../index.html?skill=Python#work">Python</a></li><li><a href="../index.html?skill=pandas#work">pandas</a></li><li><a href="../index.html?skill=matplotlib#work">matplotlib</a></li><li><a href="../index.html?skill=Streamlit#work">Streamlit</a></li><li><a href="../index.html?skill=Altair#work">Altair</a></li><li><a href="../index.html?skill=Plotly#work">Plotly</a></li><li><a href="../index.html?skill=pgeocode#work">pgeocode</a></li><li><a href="../index.html?skill=openpyxl#work">openpyxl</a></li>
+            <li><a href="../index.html?skill=Data%20cleaning#work">Data cleaning</a></li><li><a href="../index.html?skill=Cohort%20analysis#work">Cohort analysis</a></li><li><a href="../index.html?skill=Churn%20analysis#work">Churn analysis</a></li><li><a href="../index.html?skill=Pareto%20analysis#work">Pareto analysis</a></li><li><a href="../index.html?skill=Geocoding#work">Geocoding</a></li><li><a href="../index.html?skill=Dashboard%20design#work">Dashboard design</a></li><li><a href="../index.html?skill=Client%20work#work">Client work</a></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. MOTIVATION & CONSTRAINTS -->
+    <section class="pp-section">
+      <h2><small>Motivation</small>Why it mattered</h2>
+      <div class="pp-split flip fig-narrow">
+        <figure class="fig">
+          <div class="annot">
+            <a class="zoom" href="../assets/img/donor-dashboard/pareto.png" target="_blank" rel="noopener">
+              <img src="../assets/img/donor-dashboard/pareto.png" width="992" height="1164" loading="lazy" alt="Pareto Principle (Top Donors) section: a plain-language paragraph on the 80/20 rule, a Target Cumulative % slider set to 80, and a chart of ranked donor bars that fall off steeply, with a cumulative-percentage line rising toward 80 percent at about donor 231." />
+            </a>
+            <span class="pin" style="left:42.3%;top:27.3%">1</span>
+            <span class="pin" style="left:84.7%;top:37.5%">2</span>
+            <span class="pin" style="left:25.2%;top:51.9%">3</span>
+            <span class="pin" style="left:84%;top:49.3%">4</span>
+          </div>
+          <figcaption><b>Figure 3.</b> The top-donor view (synthetic demo data).
+            <ol>
+              <li>The 80/20 rule, explained for staff.</li>
+              <li>Slider: the share of dollars to explain.</li>
+              <li>Each donor's total giving in the loaded files, largest first.</li>
+              <li>Running share of dollars: 231 of 1,200 demo donors (19%) give 80%.</li>
+            </ol>
+          </figcaption>
+        </figure>
+        <div class="pp-text">
+          <p><strong>Objective:</strong> CVC's brief asked for a donor strategy aimed at high-value and monthly donors. Five of its goals need donor data: find high-value donors, segment them, track them on GiveButter, plan a recurring-gift campaign, and guide outreach.</p>
+          <p><strong>Why it matters:</strong> CVC, a St. Louis nonprofit, <a href="https://www.supportvictims.org/annual-reports" target="_blank" rel="noopener">served 6,624 victims and survivors</a> of crime and violence in 2023, yet donations and fundraisers were only about 8% of its 2022 revenue. Keeping the right donors counts.</p>
+          <div class="revmix">
+            <p class="rm-t">Where CVC's 2022 revenue came from</p>
+            <div class="rm-bar" role="img" aria-label="Stacked bar of CVC's 2022 revenue: donations 4.2 percent, fundraisers 3.8 percent, grants 91.9 percent.">
+              <span class="d" style="flex:4.2" title="Donations: 4.2%"></span>
+              <span class="f" style="flex:3.8" title="Fundraisers: 3.8%"></span>
+              <span class="g" style="flex:91.9" title="Grants (federal 39%, local 29%, state 23.9%): 91.9%">Grants 91.9%</span>
+            </div>
+            <ul class="rm-key">
+              <li><i style="background:#3d5afe"></i>Donations 4.2%</li>
+              <li><i style="background:#ff8a3d"></i>Fundraisers 3.8%</li>
+              <li><i style="background:#dcd9d0"></i>Grants 91.9%</li>
+            </ul>
+            <p class="rm-src">Source: CVC's <a href="https://www.supportvictims.org/annual-reports" target="_blank" rel="noopener">public 2022 annual report</a>.</p>
+          </div>
+        </div>
+      </div>
+      <dl class="constraints">
+        <div><dt>Intended users</dt><dd>CVC staff, not analysts</dd></div>
+        <div><dt>Data</dt><dd>Private donor records; the repo holds code only</dd></div>
+        <div><dt>Input</dt><dd>GiveButter .xlsx exports in the layout CVC shared</dd></div>
+        <div><dt>Stack</dt><dd>Open-source Python</dd></div>
+      </dl>
+    </section>
+
+    <!-- RESULTS AGAINST THE OBJECTIVE -->
+    <section class="pp-section">
+      <h2><small>Results</small>How it measured up</h2>
+      <div class="pp-split">
+        <figure class="fig">
+          <div class="annot">
+            <a class="zoom" href="../assets/img/donor-dashboard/cohorts.png" target="_blank" rel="noopener">
+              <img src="../assets/img/donor-dashboard/cohorts.png" width="1272" height="1068" loading="lazy" alt="Donor Retention Heatmap on the Cohort Analysis page, with tabs for Retention Rate and Monetary Value. Rows are cohort start quarters from 2021Q1 to 2024Q4; columns are quarters since first donation from 0 to 15. The first column is dark blue (100 percent); later cells are mostly pale blue with a few white gaps, and the grid forms a staircase because newer cohorts have fewer quarters of history." />
+            </a>
+            <span class="pin" style="left:17.8%;top:50.6%">1</span>
+            <span class="pin" style="left:50.5%;top:54.3%">2</span>
+            <span class="pin" style="left:59.7%;top:31.6%">3</span>
+            <span class="pin" style="left:34.1%;top:69.4%">4</span>
+          </div>
+          <figcaption><b>Figure 4.</b> Which donors come back (synthetic demo data). Rows: donors grouped by first-gift quarter. Color: the share giving again each later quarter.
+            <ol>
+              <li>Quarter 0 is 100% by definition.</li>
+              <li>Read a row left to right to see a group hold up.</li>
+              <li>White: no one in that group gave that quarter.</li>
+              <li>Newer groups have fewer quarters: a staircase.</li>
+            </ol>
+          </figcaption>
+        </figure>
+        <div class="pp-text">
+          <ul class="goals">
+            <li><span class="v met">✓ Met</span><strong>Find high-value donors.</strong> Every donor with an email ranked by total giving across the loaded exports (Figure 3).</li>
+            <li><span class="v part">◐ Partly met</span><strong>Segment donor groups.</strong> Individuals vs. organizations and ZIP codes; no corporate vs. community split.</li>
+            <li><span class="v part">◐ Partly met</span><strong>Track donors on GiveButter.</strong> Any number of exports load, but nothing is saved between sessions.</li>
+            <li><span class="v part">◐ Informs only</span><strong>Recurring-gift campaign.</strong> Retention views show who gives again (Figure 4); no campaign built.</li>
+            <li><span class="v part">◐ Partly met</span><strong>Guide outreach and acquisition.</strong> A top-donor contact list; nothing targets new donors.</li>
+            <li><span class="v no">○ Not measured</span><strong>Adoption and effect on fundraising.</strong> No follow-up data from CVC.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="lesson"><h3>What I learned</h3>
+        <p><strong>Dashboards fail quietly.</strong> Re-running the app on synthetic data in 2026 turned up four bugs that raise no error, such as a +51,062.7% growth label and a map left empty by one blank ZIP cell. Now I would ship a test file with checks on counts, ZIP format and axis types (see Methods).</p>
+      </div>
+    </section>
+
+    <!-- 5. TECHNICAL DETAILS -->
+    <section class="pp-section">
+      <h2><small>Technical details</small>How it works</h2>
+      <div class="pp-gallery">
+        <figure class="fig wide cap-side">
+          <div class="annot">
+            <a class="zoom" href="../assets/img/donor-dashboard/cleaning.png" target="_blank" rel="noopener">
+              <picture>
+                <source media="(max-width: 600px)" srcset="../assets/img/donor-dashboard/cleaning-m.png" width="800" height="1092" />
+                <img src="../assets/img/donor-dashboard/cleaning.png" width="1600" height="1678" loading="lazy" alt="Before and after tables from the synthetic demo export. Before: a title row reading SYNTHETIC DEMO DATA, a header row with padded names such as 'Email ' and 'Campaign Title ', five named gifts and one anonymous gift highlighted in red. After: the same gifts minus the anonymous one, with Transaction Date (UTC) and Amount renamed to Date and Donation Amount, and two added columns, Donor Type (Individual or Organization) and Source File. A note reads: both demo files, 2,613 rows in, 2,589 out; the 24 anonymous rows are dropped. Phones show 4 of the columns." />
+              </picture>
+            </a>
+            <span class="pin d" style="left:90.5%;top:10%">1</span>
+            <span class="pin d" style="left:83.7%;top:15.5%">2</span>
+            <span class="pin d" style="left:50.1%;top:42.9%">3</span>
+            <span class="pin d" style="left:11.8%;top:64.8%">4</span>
+            <span class="pin d" style="left:96.2%;top:64.8%">5</span>
+            <span class="pin m" style="left:84%;top:8.3%">1</span>
+            <span class="pin m" style="left:49.5%;top:14.3%">2</span>
+            <span class="pin m" style="left:74.2%;top:43.7%">3</span>
+            <span class="pin m" style="left:14.7%;top:62.3%">4</span>
+            <span class="pin m" style="left:93.8%;top:62.3%">5</span>
+          </div>
+          <figcaption><b>Figure 5.</b> Process: the cleaning step, run with the app's own code on the <b>synthetic</b> demo export.
+            <ol>
+              <li>Row 1 is a title, so row 2 is read as the header.</li>
+              <li>Stray spaces stripped from column names.</li>
+              <li>Gifts with no name and no organization dropped.</li>
+              <li>Columns renamed; dates and amounts converted (a bad cell becomes a blank, not a crash).</li>
+              <li>Each gift tagged Individual or Organization, and with its source file.</li>
+            </ol>
+          </figcaption>
+        </figure>
+        <figure class="fig wide">
+          <div class="annot">
+            <a class="zoom" href="../assets/img/donor-dashboard/zip-map.png" target="_blank" rel="noopener">
+              <picture>
+                <source media="(max-width: 600px)" srcset="../assets/img/donor-dashboard/zip-map-m.png" width="800" height="1313" />
+                <img src="../assets/img/donor-dashboard/zip-map.png" width="1600" height="885" loading="lazy" alt="ZIP Code-Based Donation Insights: a horizontal bar chart of the top ZIP codes by donation amount, led by St. Louis ZIPs such as 63105 and 63110, next to a US map with orange bubbles sized by dollars, concentrated on St. Louis. On phones the same screenshot is shown with the map stacked below the bar chart." />
+              </picture>
+            </a>
+            <span class="pin d" style="left:50.8%;top:24.2%">1</span>
+            <span class="pin d" style="left:66.4%;top:63.5%">2</span>
+            <span class="pin m" style="left:85%;top:15.1%">1</span>
+            <span class="pin m" style="left:40.2%;top:86.8%">2</span>
+          </div>
+          <figcaption><b>Figure 6.</b> Segmentation by place (synthetic demo data).
+            <ol>
+              <li>Top 20 ZIP codes by total dollars.</li>
+              <li>Each ZIP geocoded to a bubble sized by dollars; St. Louis is just northeast of this pin.</li>
+            </ol>
+          </figcaption>
+        </figure>
+      </div>
+
+      <details class="deep"><summary>Methods in depth</summary>
+        <div class="pp-text">
+          <h3>Scope</h3>
+          <p>CVC's brief also covered messaging, partnerships, events and market research; this page covers my donor-data work.</p>
+          <h3>First-pass analysis (March 2025)</h3>
+          <p>Before building the app I worked in a Python notebook. I charted per-campaign totals for 2022, 2023 and 2024 side by side in matplotlib and highlighted the three largest campaigns across all years. Those totals were typed in from the Fundraisers tabs of CVC's 2022 and 2023 spreadsheets and a MATLAB summary of the 2024 GiveButter export. The Pareto and organization breakdowns ran in pandas on a combined 2022 to 2024 donor sheet: group gifts by donor, sort by total, compute each donor's running share of all dollars, and keep donors up to 80%. Seaborn drew the chart. The analysis showed that a small group of donors gave most of the dollars, and that a few signature events brought in most of the event revenue.</p>
+          <h3>Cleaning and merging (Figure 5)</h3>
+          <p>The export layout the app was built for has a title line above the column names, so it reads row 2 as the header. It strips stray spaces from column names and renames duplicates (a second “Email” becomes “Email_2”) so pandas can select them, then renames three GiveButter columns to Date, Donation Amount and ZIP; the pages also read Email and Campaign Title as they are. Rows with neither a first name nor an organization are dropped. Amounts and dates are converted with <code>errors='coerce'</code>, so a bad cell becomes a blank instead of crashing the app, and a file that fails to parse shows a warning. Each row is tagged Individual or Organization (by whether an organization name is present) and with its source file. The app tracks file names, so uploading a file twice does not double-count it, and removing a file removes its rows as long as another file stays loaded. Nothing is saved between sessions, and CVC's 2022 and 2023 spreadsheets use another layout.</p>
+          <h3>Retention, churn and cohorts</h3>
+          <ul>
+            <li><strong>Donor key:</strong> email address, used for unique and repeat donor counts, retention, cohorts and the top-donor ranking.</li>
+            <li><strong>Returning vs. one-time:</strong> a donor with more than one gift is returning; the app labels single-gift donors “New”.</li>
+            <li><strong>Quarterly churn:</strong> a donor-by-quarter activity grid (1 if they gave). A donor active in one quarter but not the next counts as churned; churn rate is churned divided by active. Someone who gives once a year counts as churned after every gift, so quarterly churn runs high by construction. The cohort view looks further ahead.</li>
+            <li><strong>Cohorts (Figure 4):</strong> a donor's cohort is the quarter of their first gift. Every gift gets an offset, quarters since that first gift, computed on one global quarter index so offsets stay consistent across years. Each cell is the number of the cohort's donors who gave at that offset divided by the cohort's size (blue map), or their total dollars (a second tab, green map). Offsets where no one gave stay blank rather than zero. Comparing cohorts down one column is a like-for-like comparison.</li>
+            <li><strong>Recurring gifts:</strong> the app does not read GiveButter's recurring-plan (Frequency) field.</li>
+          </ul>
+          <h3>Map and campaigns (Figure 6 and the Fundraising page)</h3>
+          <p>Spreadsheets drop leading zeros, so ZIP codes are padded back to five digits before a pgeocode (GeoNames postal database) lookup. The bar chart shows the top 20 ZIPs by total dollars (the chart library hides alternate labels when they crowd). On the Fundraising page, staff pick any campaign to see its year-over-year totals. The app strips a trailing year from each title, so a demo title like “Spring Appeal 2021” (Figure 5) merges with the same appeal in other years, and it fills a full campaign-by-year grid, so a year before a campaign launched shows as $0 instead of disappearing. The page also compares total raised and average gift per campaign (the Home page's campaign table adds gift counts), and plots gifts up to $1,000 with an adjustable bin width.</p>
+          <h3>What the 2026 re-test found</h3>
+          <ul>
+            <li><strong>Bugs:</strong> the churn chart treats quarter labels as dates, so its x-axis shows no quarters; the “Organizations” tile counts gifts, not organizations (177 on demo data with 100); before a date range is picked, the growth label divides by the first month's small total (+51,062.7%); and when ZIPs are stored as numbers, one blank cell makes pandas read the column as decimals (“63130.0”), so the map comes out empty.</li>
+            <li><strong>Fragile input:</strong> the app always reads row 2 as the header, to match the file CVC shared, so an export saved with headers in row 1 loads zero rows.</li>
+            <li><strong>Consequence:</strong> staff would see a wrong number, or an empty chart, with no warning.</li>
+            <li><strong>Check I'd add:</strong> a small synthetic test file shipped with the app, assertions on unique counts, ZIP format and axis types, and header-row detection on upload.</li>
+            <li><strong>Decide what a “donor” is before counting donors.</strong> The app keys donors by email address: a gift with no email drops out of the retention counts, and one person with two addresses counts twice. I would now make the donor key an explicit, documented choice and show staff how many gifts it leaves out.</li>
+          </ul>
+          <h3>Demo data for this page</h3>
+          <p>To protect donor privacy, the screenshots use a seeded synthetic dataset in a simplified version of the GiveButter export layout (a title row, then 12 of the export's 64 columns, including the seven the app reads): 1,200 fictional donors (1,100 individuals, 100 organizations) and 2,613 gift rows from 2021 to 2024, with real public ZIP codes, mostly in the St. Louis area. The demo is larger than CVC's real records and starts a year earlier. It includes 24 anonymous rows and padded column names so the cleaning step has real work to do; after cleaning, 2,589 rows remain. The Home screenshot uses the app's real uploader; the other pages load the same files through a small demo-only helper that runs Home.py's own upload code. Figure 3's screenshot trims one explainer paragraph. I kept the client's donor records and private figures off this page; the 8% and the revenue split (grants: federal 39%, local 29%, state 23.9%) come from CVC's public annual report.</p>
+        </div>
+      </details>
+    </section>
+
+    <nav class="pp-next">
+      <a href="quant-alpha.html"><span>← Previous</span><strong>Stress-testing trading strategies</strong></a>
+      <a href="odmr-pipeline.html"><span>Next →</span><strong>Turning 10,000 noisy sweeps into a working diamond magnetic-field sensor</strong></a>
+    </nav>
+  </main>
+
+  <footer class="wrap footer">
+    <p>© 2026 Jimmy Gu · <a href="mailto:g.jimmy@wustl.edu">g.jimmy@wustl.edu</a> · <a href="https://www.linkedin.com/in/jimmy-yufan-gu" target="_blank" rel="noopener">LinkedIn ↗</a> · <a href="https://github.com/ygu60" target="_blank" rel="noopener">GitHub ↗</a> · <a href="../assets/Jimmy_Gu_Portfolio.pdf" download>PDF portfolio ↓</a></p>
+    <p>Outside of work: running about 50 miles a week, judo, and BJJ.</p>
+  </footer>
+</body>
+</html>

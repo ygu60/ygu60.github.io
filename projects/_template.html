@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<!--
+  PROJECT PAGE TEMPLATE. Copy to projects/<slug>.html and fill in.
+  Structure follows the MIT CommLab "inverted pyramid" (https://mitcommlab.mit.edu/meche/commkit/portfolio/):
+    1. Impactful title (outcome-oriented, no course numbers)
+    2. Outcome: what it is, how it performed, impact, MY contribution (readable in 30 seconds)
+    3. Experience, learning & skills: strong action verbs, bullets, my role in the team
+    4. Motivation: objective, why it matters, constraints (team size, timeline, budget/resources)
+    5. Technical details: depth for interested readers
+    + Results against the objective (a .goals scorecard) and a "What I learned" box, placed before the
+      technical details so a 30-60 s skim reaches them (required where something didn't go as planned)
+  Visuals: 2–6 per project, ~70% of the page, captioned, annotated with .pin markers where useful,
+  mixing system-level, process, and result views.
+  Paths are relative to /projects/, so assets are "../assets/...".
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Remove the noindex line on a real page; it keeps this template out of search results. -->
+  <meta name="robots" content="noindex" />
+  <title>PROJECT TITLE | Jimmy Gu</title>
+  <meta name="description" content="ONE-SENTENCE OUTCOME." />
+  <link rel="canonical" href="https://ygu60.github.io/projects/SLUG.html" />
+  <link rel="icon" href="../favicon.ico" sizes="32x32" />
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+  <meta property="og:type" content="article" />
+  <meta property="og:site_name" content="Jimmy Gu" />
+  <meta property="og:title" content="PROJECT TITLE | Jimmy Gu" />
+  <meta property="og:description" content="ONE-SENTENCE OUTCOME." />
+  <meta property="og:url" content="https://ygu60.github.io/projects/SLUG.html" />
+  <meta property="og:image" content="https://ygu60.github.io/assets/img/SLUG/hero.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/open-props.min.css" />
+  <link rel="stylesheet" href="../styles.css" />
+</head>
+<body>
+  <div class="bg-blobs" aria-hidden="true"><span></span><span></span><span></span></div>
+
+  <header class="nav">
+    <div class="wrap nav-inner">
+      <a href="../index.html" class="logo">Jimmy Gu</a>
+      <nav>
+        <a href="../index.html#work">Work</a>
+        <a href="../index.html#about">About</a>
+        <a href="../index.html#contact">Contact</a>
+        <a href="../assets/Jimmy_Gu_Portfolio.pdf" download>PDF portfolio</a>
+        <a href="../assets/Jimmy_Gu_Resume.pdf" class="btn btn-sm" target="_blank" rel="noopener">Resume ↗</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap pp">
+    <a href="../index.html#work" class="back">← All projects</a>
+
+    <!-- 1 + 2. TITLE & OUTCOME (the 30-second read) -->
+    <header class="pp-hero">
+      <div>
+        <p class="kicker">CATEGORY · TEAM OR ORG · YEAR (same as the home-page card)</p>
+        <h1>Impactful, outcome-oriented title</h1>
+        <p class="pp-outcome">What it is, how it performed (<strong>key number</strong>), why it matters, and what I specifically did.</p>
+        <dl class="pp-facts">
+          <div><dt>My role</dt><dd>…</dd></div>
+          <div><dt>Team</dt><dd>…</dd></div>
+          <div><dt>Timeline</dt><dd>…</dd></div>
+          <div><dt>Tools</dt><dd>…</dd></div>
+        </dl>
+        <div class="actions">
+          <a class="btn" href="#" target="_blank" rel="noopener">Code ↗</a>
+        </div>
+      </div>
+      <figure class="fig fig-hero">
+        <div class="annot">
+          <img src="../assets/img/SLUG/hero.png" alt="…" />
+          <span class="pin" style="left:50%;top:50%">1</span>
+        </div>
+        <figcaption><b>Figure 1.</b> What this shows and what to notice.
+          <ol><li>What pin 1 marks.</li></ol>
+        </figcaption>
+      </figure>
+    </header>
+
+    <div class="kpis">
+      <div><strong>0.00</strong><span>Metric</span></div>
+    </div>
+
+    <!-- 3. EXPERIENCE, LEARNING & SKILLS -->
+    <section class="pp-section">
+      <h2><small>My contribution</small>What I did</h2>
+      <div class="pp-split">
+        <figure class="fig"><img src="../assets/img/SLUG/process.png" alt="…" /><figcaption><b>Figure 2.</b> …</figcaption></figure>
+        <div class="pp-text">
+          <ul>
+            <li><strong>Designed</strong> …</li>
+            <li><strong>Built</strong> …</li>
+            <li><strong>Analyzed</strong> …</li>
+          </ul>
+          <ul class="tags"><li><a href="../index.html?skill=Python#work">Python</a></li></ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. MOTIVATION & CONSTRAINTS -->
+    <section class="pp-section">
+      <h2><small>Motivation</small>Why it mattered</h2>
+      <div class="pp-split flip">
+        <figure class="fig"><img src="../assets/img/SLUG/context.png" alt="…" /><figcaption><b>Figure 3.</b> …</figcaption></figure>
+        <div class="pp-text">
+          <p>Objective and why it matters.</p>
+        </div>
+      </div>
+      <dl class="constraints">
+        <div><dt>Team</dt><dd>…</dd></div>
+        <div><dt>Timeline</dt><dd>…</dd></div>
+        <div><dt>Constraint</dt><dd>…</dd></div>
+      </dl>
+    </section>
+
+    <!-- RESULTS AGAINST THE OBJECTIVE, then the lesson -->
+    <section class="pp-section">
+      <h2><small>Results</small>How it measured up</h2>
+      <div class="pp-split">
+        <figure class="fig"><img src="../assets/img/SLUG/result.png" alt="…" /><figcaption><b>Figure 4.</b> …</figcaption></figure>
+        <div class="pp-text">
+          <ul class="goals">
+            <li><span class="v met">✓ Met</span><strong>Objective 1.</strong> One line of evidence.</li>
+            <li><span class="v part">◐ Partly met</span><strong>Objective 2.</strong> …</li>
+            <li><span class="v no">○ Not met</span><strong>Objective 3.</strong> …</li>
+          </ul>
+        </div>
+      </div>
+      <div class="lesson"><h3>What I learned</h3><p>…</p></div>
+    </section>
+
+    <!-- 5. TECHNICAL DETAILS -->
+    <section class="pp-section">
+      <h2><small>Technical details</small>How it works</h2>
+      <div class="pp-gallery">
+        <figure class="fig"><img src="../assets/img/SLUG/detail-1.png" alt="…" /><figcaption><b>Figure 5.</b> …</figcaption></figure>
+        <figure class="fig"><img src="../assets/img/SLUG/detail-2.png" alt="…" /><figcaption><b>Figure 6.</b> …</figcaption></figure>
+      </div>
+      <details class="deep"><summary>Methods in depth</summary>
+        <div class="pp-text"><p>…</p></div>
+      </details>
+    </section>
+
+    <nav class="pp-next">
+      <a href="PREV.html"><span>← Previous</span><strong>Short form of the previous page's H1</strong></a>
+      <a href="NEXT.html"><span>Next →</span><strong>Short form of the next page's H1</strong></a>
+    </nav>
+  </main>
+
+  <footer class="wrap footer">
+    <p>© 2026 Jimmy Gu · <a href="mailto:g.jimmy@wustl.edu">g.jimmy@wustl.edu</a> · <a href="https://www.linkedin.com/in/jimmy-yufan-gu" target="_blank" rel="noopener">LinkedIn ↗</a> · <a href="https://github.com/ygu60" target="_blank" rel="noopener">GitHub ↗</a> · <a href="../assets/Jimmy_Gu_Portfolio.pdf" download>PDF portfolio ↓</a></p>
+    <p>Outside of work: running about 50 miles a week, judo, and BJJ.</p>
+  </footer>
+</body>
+</html>

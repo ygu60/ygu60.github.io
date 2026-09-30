@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<!--
+  Turning 10,000 noisy sweeps into a working diamond magnetic-field sensor (ODMR acquisition & analysis pipeline).
+  Inverted-pyramid project page (MIT CommLab guide).
+  Sources: github.com/ygu60/ODMR-Phys322-Sweep-Control (README, RESULTS.md, UNCERTAINTY_ANALYSIS.md,
+  scripts, Final Paper/Paper.tex, references/ODMR_Lab_Notebook.pdf, csv_output/*, commit history: 27 commits,
+  all by ygu60, Sep 10 to Sep 29, 2026).
+  Figures 1, 3, 5 and the "after" half of Figure 6 are re-rendered from the repo's real data with Jimmy's
+  own pipeline code (fit N and R² reproduce odmr_bfield_fit_09172026_Outputs.csv exactly; the 0 A
+  cleaning step reproduces 835/1000 kept). The "before" half of Figure 6 is Figure 3 of the lab notebook
+  (Sep 10 output of his first program), cropped to its contrast panel. Figure 4 is the paper's figure
+  (Final Paper/figures/fig_b_vs_current.png, data unchanged by the Sep 29 commit) with its chart title
+  cropped off. Figure 2 is a diagram of the real setup (desktop and phone layouts).
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Turning 10,000 Noisy Sweeps into a Working Diamond Magnetic-Field Sensor | Jimmy Gu</title>
+  <meta name="description" content="A Python pipeline that drives lab instruments, cleans 10,000 noisy sweeps, and fits them to turn a diamond sensor's few-percent fluorescence dip into magnetic-field readings, tested against the coil's predicted field." />
+  <link rel="canonical" href="https://ygu60.github.io/projects/odmr-pipeline.html" />
+  <link rel="icon" href="../favicon.ico" sizes="32x32" />
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+  <meta property="og:type" content="article" />
+  <meta property="og:site_name" content="Jimmy Gu" />
+  <meta property="og:title" content="Turning 10,000 noisy sweeps into a working diamond magnetic-field sensor | Jimmy Gu" />
+  <meta property="og:description" content="A Python pipeline that drives lab instruments, rejects glitched sweeps and fits every spectrum: up to 8 resonance lines, R² ≥ 0.97 in all 10 conditions, checked against the coil's predicted field." />
+  <meta property="og:url" content="https://ygu60.github.io/projects/odmr-pipeline.html" />
+  <meta property="og:image" content="https://ygu60.github.io/assets/img/odmr-pipeline/hero-fits.png" />
+  <meta property="og:image:alt" content="Stacked resonance spectra at five coil currents with automatic fits: one double dip splits into up to eight lines." />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/open-props.min.css" />
+  <link rel="stylesheet" href="../styles.css" />
+  <style>
+    .sysdiag { display: block; width: 100%; height: auto; background: #fbfbfa; font-family: var(--sans); }
+    .sysdiag .t { font-size: 19px; font-weight: 600; fill: #16181d; }
+    .sysdiag .s { font-size: 14px; fill: #555b66; }
+    .sysdiag .lane { font: 500 12.5px var(--mono); letter-spacing: 0.08em; fill: #555b66; }
+    .sysdiag .sw .t { fill: #2a3cb8; }
+    .sysdiag-m { display: none; }
+    .sysdiag-m .t { font-size: 16px; }
+    .sysdiag-m .s { font-size: 12px; }
+    .sysdiag-m .lane { font-size: 11px; }
+    @media (max-width: 600px) { .sysdiag-d { display: none; } .sysdiag-m { display: block; } }
+    .fig a.zoom { display: block; cursor: zoom-in; }
+    .doc-note { font-size: 0.82rem; color: var(--ink-2); margin-top: var(--size-3); max-width: 60ch; }
+    .doc-note a { color: inherit; text-decoration: underline; }
+    @media print { .doc-note { display: none; } }
+  </style>
+</head>
+<body>
+  <div class="bg-blobs" aria-hidden="true"><span></span><span></span><span></span></div>
+
+  <header class="nav">
+    <div class="wrap nav-inner">
+      <a href="../index.html" class="logo">Jimmy Gu</a>
+      <nav>
+        <a href="../index.html#work">Work</a>
+        <a href="../index.html#about">About</a>
+        <a href="../index.html#contact">Contact</a>
+        <a href="../assets/Jimmy_Gu_Portfolio.pdf" download>PDF portfolio</a>
+        <a href="../assets/Jimmy_Gu_Resume.pdf" class="btn btn-sm" target="_blank" rel="noopener">Resume ↗</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap pp">
+    <a href="../index.html#work" class="back">← All projects</a>
+
+    <!-- 1 + 2. TITLE & OUTCOME -->
+    <header class="pp-hero">
+      <div>
+        <p class="kicker">Instrumentation · Team of 2 · 2026</p>
+        <h1>Turning 10,000 noisy sweeps into a working diamond <span style="white-space:nowrap">magnetic-field</span> sensor</h1>
+        <p class="pp-outcome">I built the Python pipeline behind a diamond-based magnetic-field sensor. It drives the instruments, captures <strong>10,000 sweeps</strong>, rejects glitched ones and fits every spectrum: up to <strong>8 resonance lines</strong>, <strong>R² ≥ 0.97</strong> in all 10 conditions. Readings ran below the coil's predicted field; one constant 0.61&nbsp;mT offset, fitted afterward and consistent with stray magnetization, brings 0.4 to 0.8&nbsp;A within about 1.1σ of theory.</p>
+        <dl class="pp-facts">
+          <div><dt>My role</dt><dd>Built all software; sole committer on the repo</dd></div>
+          <div><dt>Team</dt><dd>2 (me and a lab partner)</dd></div>
+          <div><dt>Timeline</dt><dd>Aug 27 to Sep 29, 2026 (analysis done by Sep 22)</dd></div>
+          <div><dt>Tools</dt><dd>Python, PyVISA/SCPI, NumPy, SciPy, matplotlib</dd></div>
+        </dl>
+        <div class="actions">
+          <a class="btn" href="https://github.com/ygu60/ODMR-Phys322-Sweep-Control" target="_blank" rel="noopener">Code ↗</a>
+          <a class="btn btn-ghost" href="https://github.com/ygu60/ODMR-Phys322-Sweep-Control/blob/master/UNCERTAINTY_ANALYSIS.md" target="_blank" rel="noopener">Uncertainty analysis ↗</a>
+          <a class="btn btn-ghost" href="https://github.com/ygu60/ODMR-Phys322-Sweep-Control/blob/master/references/ODMR_Lab_Notebook.pdf" target="_blank" rel="noopener">Lab notebook ↗</a>
+        </div>
+        <p class="doc-note">Final numbers: the uncertainty analysis and <a href="https://github.com/ygu60/ODMR-Phys322-Sweep-Control/blob/master/csv_output/odmr_bfield_fit_09172026_Outputs.csv" target="_blank" rel="noopener">fit table</a>. The notebook and RESULTS.md predate my Sep 22 re-fit.</p>
+      </div>
+      <figure class="fig fig-hero">
+        <div class="annot">
+          <a class="zoom" href="../assets/img/odmr-pipeline/hero-fits.png" target="_blank" rel="noopener"><img src="../assets/img/odmr-pipeline/hero-fits.png" width="1440" height="1240" alt="Stacked ODMR spectra at 0, 0.2, 0.4, 0.6 and 0.8 amps of coil current. A single deep double dip at 0 A splits into 6 and then 8 shallower lines as the current rises; a fitted curve tracks the measured data in every row." /></a>
+          <span class="pin" style="left:48.6%;top:84.3%">1</span>
+          <span class="pin" style="left:53.2%;top:41%">2</span>
+          <span class="pin" style="left:11%;top:15.5%">3</span>
+        </div>
+        <figcaption><b>Figure 1.</b> Real spectra from my pipeline (dark gray) and my adaptive fit (blue) at every other coil current: as the field grows, one resonance splits into many.
+          <ol>
+            <li>Zero field: a clean double dip, 7.48% deep.</li>
+            <li>0.4&nbsp;A: two shallow shoulders a shared-depth fit missed; per-line depths recover them.</li>
+            <li>0.8&nbsp;A: eight lines. The outermost pair (orange) gives the field.</li>
+          </ol>
+        </figcaption>
+      </figure>
+    </header>
+
+    <div class="kpis">
+      <div><strong>10,000</strong><span>Sweeps captured (10 currents × 1,000)</span></div>
+      <div><strong>85%</strong><span>Kept after automated QC (8,517)</span></div>
+      <div><strong>≥ 0.97</strong><span>Fit R² in every condition</span></div>
+      <div><strong>1.1σ</strong><span>Largest gap to coil theory at <span style="display:inline;white-space:nowrap">0.4–0.8&nbsp;A</span>, after one fitted offset</span></div>
+    </div>
+
+    <!-- 3. EXPERIENCE, LEARNING & SKILLS -->
+    <section class="pp-section">
+      <h2><small>My contribution</small>What I did</h2>
+      <div class="pp-split">
+        <figure class="fig">
+          <!-- Desktop / tablet layout -->
+          <svg class="sysdiag sysdiag-d" viewBox="0 0 640 790" role="img" aria-labelledby="sysdiag-title">
+            <title id="sysdiag-title">System diagram: laser, diamond, microwave source, photodiode and oscilloscope, set up by a team of two, feeding six software stages I built: acquire, clean, calibrate, average, fit, and field with uncertainty.</title>
+            <defs>
+              <marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#8a877d"/></marker>
+              <marker id="ahg" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#1f9d55"/></marker>
+              <marker id="ahr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#e34948"/></marker>
+              <marker id="ahb" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3d5afe"/></marker>
+            </defs>
+            <!-- Hardware lane -->
+            <rect x="6" y="6" width="628" height="362" rx="14" fill="#f4f3ef"/>
+            <text class="lane" x="22" y="32">HARDWARE · SET UP AS A TEAM OF 2</text>
+            <g fill="#fff" stroke="#cfcabd" stroke-width="1.5">
+              <rect x="18" y="48" width="176" height="78" rx="10"/>
+              <rect x="232" y="48" width="176" height="78" rx="10"/>
+              <rect x="446" y="48" width="176" height="78" rx="10"/>
+              <rect x="18" y="166" width="176" height="78" rx="10"/>
+              <rect x="232" y="166" width="176" height="78" rx="10"/>
+              <rect x="18" y="284" width="604" height="70" rx="10"/>
+            </g>
+            <text class="t" x="34" y="80">Green laser</text><text class="s" x="34" y="104">532 nm excitation</text>
+            <text class="t" x="248" y="80">Diamond</text><text class="s" x="248" y="104">NV centers, coil field</text>
+            <text class="t" x="462" y="80">Photodiode</text><text class="s" x="462" y="104">red glow = signal</text>
+            <text class="t" x="34" y="198">Function gen.</text><text class="s" x="34" y="222">sawtooth sweep</text>
+            <text class="t" x="248" y="198">Microwaves</text><text class="s" x="248" y="222">VCO, near 2.9 GHz</text>
+            <text class="t" x="34" y="314">Oscilloscope</text><text class="s" x="34" y="338">CH1: fluorescence   ·   CH2: sweep voltage</text>
+            <line x1="196" y1="87" x2="228" y2="87" stroke="#1f9d55" stroke-width="3" marker-end="url(#ahg)"/>
+            <line x1="410" y1="87" x2="442" y2="87" stroke="#e34948" stroke-width="3" marker-end="url(#ahr)"/>
+            <line x1="196" y1="205" x2="228" y2="205" stroke="#8a877d" stroke-width="2" marker-end="url(#ah)"/>
+            <line x1="320" y1="164" x2="320" y2="130" stroke="#8a877d" stroke-width="2" marker-end="url(#ah)"/>
+            <line x1="106" y1="246" x2="106" y2="280" stroke="#8a877d" stroke-width="2" marker-end="url(#ah)"/>
+            <line x1="534" y1="128" x2="534" y2="280" stroke="#e34948" stroke-width="2" marker-end="url(#ahr)"/>
+            <text class="s" x="118" y="268">CH2</text><text class="s" x="546" y="206">CH1</text>
+            <!-- Software lane -->
+            <rect x="6" y="384" width="628" height="400" rx="14" fill="#eef0ff"/>
+            <line x1="106" y1="356" x2="106" y2="420" stroke="#3d5afe" stroke-width="2.5" marker-end="url(#ahb)"/>
+            <text class="lane" x="618" y="409" text-anchor="end">SOFTWARE · BUILT BY ME</text>
+            <text class="s" x="120" y="408">PyVISA + SCPI</text>
+            <g class="sw">
+              <g fill="#fff" stroke="#3d5afe" stroke-width="1.5">
+                <rect x="18" y="424" width="176" height="86" rx="10"/>
+                <rect x="232" y="424" width="176" height="86" rx="10"/>
+                <rect x="446" y="424" width="176" height="86" rx="10"/>
+                <rect x="18" y="566" width="176" height="86" rx="10"/>
+                <rect x="232" y="566" width="176" height="86" rx="10"/>
+                <rect x="446" y="566" width="176" height="86" rx="10"/>
+              </g>
+              <text class="t" x="34" y="460">Acquire</text><text class="s" x="34" y="486">1,000 sweeps/current</text>
+              <text class="t" x="248" y="460">Clean</text><text class="s" x="248" y="486">drop glitches, despike</text>
+              <text class="t" x="462" y="460">Calibrate</text><text class="s" x="462" y="486">voltage → GHz</text>
+              <text class="t" x="34" y="602">Average</text><text class="s" x="34" y="628">common grid, % dip</text>
+              <text class="t" x="248" y="602">Fit</text><text class="s" x="248" y="628">adaptive N-Lorentzian</text>
+              <text class="t" x="462" y="602">Field ± σ</text><text class="s" x="462" y="628">vs. coil theory</text>
+              <g stroke="#3d5afe" stroke-width="2" fill="none">
+                <line x1="196" y1="467" x2="228" y2="467" marker-end="url(#ahb)"/>
+                <line x1="410" y1="467" x2="442" y2="467" marker-end="url(#ahb)"/>
+                <path d="M534,512 V538 H106 V562" marker-end="url(#ahb)"/>
+                <line x1="196" y1="609" x2="228" y2="609" marker-end="url(#ahb)"/>
+                <line x1="410" y1="609" x2="442" y2="609" marker-end="url(#ahb)"/>
+                <line x1="106" y1="654" x2="106" y2="684" marker-end="url(#ahb)"/>
+              </g>
+              <rect x="18" y="688" width="604" height="82" rx="10" fill="#fff" stroke="#3d5afe" stroke-width="1.5" stroke-dasharray="6 5"/>
+              <text class="t" x="34" y="722">Reports &amp; figures</text>
+              <text class="s" x="34" y="748">grid · ridgeline · 3D terrain · fit table · field-vs-current plot</text>
+            </g>
+          </svg>
+          <!-- Phone layout: same content, two columns, larger type -->
+          <svg class="sysdiag sysdiag-m" viewBox="0 0 360 772" role="img" aria-labelledby="sysdiag-m-title">
+            <title id="sysdiag-m-title">System diagram: laser, diamond, microwave source, photodiode and oscilloscope, set up by a team of two, feeding six software stages I built: acquire, clean, calibrate, average, fit, and field with uncertainty.</title>
+            <defs>
+              <marker id="mah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#8a877d"/></marker>
+              <marker id="mahg" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#1f9d55"/></marker>
+              <marker id="mahr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#e34948"/></marker>
+              <marker id="mahb" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3d5afe"/></marker>
+            </defs>
+            <rect x="4" y="4" width="352" height="312" rx="12" fill="#f4f3ef"/>
+            <text class="lane" x="16" y="28">HARDWARE · SET UP AS A TEAM OF 2</text>
+            <g fill="#fff" stroke="#cfcabd" stroke-width="1.5">
+              <rect x="14" y="44" width="150" height="66" rx="9"/>
+              <rect x="190" y="44" width="150" height="66" rx="9"/>
+              <rect x="14" y="140" width="150" height="66" rx="9"/>
+              <rect x="190" y="140" width="150" height="66" rx="9"/>
+              <rect x="14" y="236" width="150" height="66" rx="9"/>
+              <rect x="190" y="236" width="150" height="66" rx="9"/>
+            </g>
+            <text class="t" x="26" y="72">Green laser</text><text class="s" x="26" y="94">532 nm excitation</text>
+            <text class="t" x="202" y="72">Diamond</text><text class="s" x="202" y="94">NV centers + coil</text>
+            <text class="t" x="26" y="168">Function gen.</text><text class="s" x="26" y="190">sawtooth sweep</text>
+            <text class="t" x="202" y="168">Microwaves</text><text class="s" x="202" y="190">VCO, near 2.9 GHz</text>
+            <text class="t" x="26" y="264">Oscilloscope</text><text class="s" x="26" y="286">CH1 glow, CH2 sweep</text>
+            <text class="t" x="202" y="264">Photodiode</text><text class="s" x="202" y="286">red glow = signal</text>
+            <line x1="166" y1="77" x2="186" y2="77" stroke="#1f9d55" stroke-width="3" marker-end="url(#mahg)"/>
+            <line x1="166" y1="173" x2="186" y2="173" stroke="#8a877d" stroke-width="2" marker-end="url(#mah)"/>
+            <line x1="265" y1="138" x2="265" y2="114" stroke="#8a877d" stroke-width="2" marker-end="url(#mah)"/>
+            <path d="M342,77 H350 V269 H345" fill="none" stroke="#e34948" stroke-width="2" marker-end="url(#mahr)"/>
+            <line x1="188" y1="269" x2="168" y2="269" stroke="#e34948" stroke-width="2" marker-end="url(#mahr)"/>
+            <line x1="89" y1="208" x2="89" y2="232" stroke="#8a877d" stroke-width="2" marker-end="url(#mah)"/>
+            <rect x="4" y="326" width="352" height="440" rx="12" fill="#eef0ff"/>
+            <line x1="89" y1="304" x2="89" y2="384" stroke="#3d5afe" stroke-width="2.5" marker-end="url(#mahb)"/>
+            <text class="lane" x="104" y="350">SOFTWARE · BUILT BY ME</text>
+            <text class="s" x="104" y="370">PyVISA + SCPI</text>
+            <g class="sw">
+              <g fill="#fff" stroke="#3d5afe" stroke-width="1.5">
+                <rect x="14" y="388" width="150" height="66" rx="9"/>
+                <rect x="190" y="388" width="150" height="66" rx="9"/>
+                <rect x="14" y="484" width="150" height="66" rx="9"/>
+                <rect x="190" y="484" width="150" height="66" rx="9"/>
+                <rect x="14" y="580" width="150" height="66" rx="9"/>
+                <rect x="190" y="580" width="150" height="66" rx="9"/>
+              </g>
+              <text class="t" x="26" y="416">Acquire</text><text class="s" x="26" y="438">1,000 sweeps each</text>
+              <text class="t" x="202" y="416">Clean</text><text class="s" x="202" y="438">reject glitches</text>
+              <text class="t" x="26" y="512">Calibrate</text><text class="s" x="26" y="534">voltage → GHz</text>
+              <text class="t" x="202" y="512">Average</text><text class="s" x="202" y="534">common grid, % dip</text>
+              <text class="t" x="26" y="608">Fit</text><text class="s" x="26" y="630">adaptive, N lines</text>
+              <text class="t" x="202" y="608">Field ± σ</text><text class="s" x="202" y="630">vs. coil theory</text>
+              <g stroke="#3d5afe" stroke-width="2" fill="none">
+                <line x1="166" y1="421" x2="186" y2="421" marker-end="url(#mahb)"/>
+                <path d="M265,456 V469 H89 V480" marker-end="url(#mahb)"/>
+                <line x1="166" y1="517" x2="186" y2="517" marker-end="url(#mahb)"/>
+                <path d="M265,552 V565 H89 V576" marker-end="url(#mahb)"/>
+                <line x1="166" y1="613" x2="186" y2="613" marker-end="url(#mahb)"/>
+                <line x1="89" y1="648" x2="89" y2="672" marker-end="url(#mahb)"/>
+              </g>
+              <rect x="14" y="676" width="326" height="78" rx="9" fill="#fff" stroke="#3d5afe" stroke-width="1.5" stroke-dasharray="6 5"/>
+              <text class="t" x="26" y="702">Reports &amp; figures</text>
+              <text class="s" x="26" y="722">grid · ridgeline · 3D terrain</text>
+              <text class="s" x="26" y="740">fit table · field-vs-current plot</text>
+            </g>
+          </svg>
+          <figcaption><b>Figure 2.</b> The system. Gray: optics and instruments we assembled as a team. Blue: the software I built (7 Python scripts, about 2,300 lines).</figcaption>
+        </figure>
+        <div class="pp-text">
+          <ul>
+            <li><strong>Automated</strong> an oscilloscope and a function generator from Python (PyVISA/SCPI): 1,000 triggered sweeps per condition.</li>
+            <li><strong>Diagnosed</strong> a scope trigger that never locked (the display drifted) with a read-only check script, then fixed the root cause.</li>
+            <li><strong>Engineered</strong> QC that rejects glitched sweeps with a data-derived threshold (85% kept).</li>
+            <li><strong>Fixed</strong> a jagged frequency axis and a sign bug that turned dips into peaks.</li>
+            <li><strong>Designed</strong> an adaptive fit that counts dips first; per-line depths lifted R² at 0.5&nbsp;A from 0.88 to 0.99.</li>
+            <li><strong>Propagated</strong> uncertainty into every field reading and the theory band.</li>
+            <li><strong>Paired</strong> with an AI coding assistant (Claude Code) to write the code and draft the docs; my lab notebook and commits record each debugging step and design decision.</li>
+            <li><strong>Documented</strong> it all: README, uncertainty write-up, dated lab notebook, co-authored paper draft.</li>
+          </ul>
+          <ul class="tags"><li><a href="../index.html?skill=Python#work">Python</a></li><li><a href="../index.html?skill=PyVISA#work">PyVISA / SCPI</a></li><li><a href="../index.html?skill=NumPy#work">NumPy</a></li><li><a href="../index.html?skill=SciPy#work">SciPy</a></li><li><a href="../index.html?skill=matplotlib#work">matplotlib</a></li><li><a href="../index.html?skill=Signal%20processing#work">Signal processing</a></li><li><a href="../index.html?skill=Data%20QC#work">Data QC</a></li><li><a href="../index.html?skill=Nonlinear%20fitting#work">Nonlinear fitting</a></li><li><a href="../index.html?skill=Uncertainty%20analysis#work">Uncertainty analysis</a></li><li><a href="../index.html?skill=Git#work">Git</a></li><li><a href="../index.html?skill=LaTeX#work">LaTeX</a></li><li><a href="../index.html?skill=AI-assisted%20development#work">AI-assisted development</a></li></ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. MOTIVATION & CONSTRAINTS -->
+    <section class="pp-section">
+      <h2><small>Motivation</small>Why it mattered</h2>
+      <div class="pp-split flip">
+        <figure class="fig">
+          <div class="annot">
+            <a class="zoom" href="../assets/img/odmr-pipeline/raw-vs-average.png" target="_blank" rel="noopener"><img src="../assets/img/odmr-pipeline/raw-vs-average.png" width="1440" height="860" loading="lazy" alt="One sweep of photodiode voltage wanders by several hundredths of a volt in quantized steps with no visible dip, while the average of 835 cleaned sweeps shows a clear double dip near 2.91 gigahertz." /></a>
+            <span class="pin" style="left:69%;top:9%">1</span>
+            <span class="pin" style="left:64%;top:78%">2</span>
+          </div>
+          <figcaption><b>Figure 3.</b> Why the pipeline exists: one raw sweep (gray) vs. the average of 835 cleaned sweeps (blue), same zero-field capture.
+            <ol>
+              <li>One sweep: drift bigger than the dip, in coarse digitizer steps.</li>
+              <li>Averaged: a clear double dip.</li>
+            </ol>
+          </figcaption>
+        </figure>
+        <div class="pp-text">
+          <p>NV centers, atom-sized defects in diamond, glow red under a green laser and dim by a few percent at a microwave resonance near 2.9&nbsp;GHz. A magnetic field splits that resonance, and the split gives the field (optically detected magnetic resonance, ODMR).</p>
+          <p><strong>Objective:</strong> build this sensor from teaching-lab hardware and test it against coil theory: clean without distorting, detect the dip, resolve the splitting, match theory. One sweep can't show the dip (Figure 3).</p>
+        </div>
+      </div>
+      <dl class="constraints">
+        <div><dt>Context</dt><dd>Advanced undergraduate physics lab course, fall 2026</dd></div>
+        <div><dt>Team</dt><dd>2 people; I built all the software</dd></div>
+        <div><dt>Starting point</dt><dd>A LabVIEW design and two- and four-dip fit models (one shared depth) from the lab handout</dd></div>
+        <div><dt>Timeline</dt><dd>7 lab sessions, analysis done by Sep 22</dd></div>
+        <div><dt>Data volume</dt><dd>Captures up to several GB, past GitHub's 100&nbsp;MB file limit</dd></div>
+        <div><dt>Sample</dt><dd>One grain of diamond powder, tilted to the field: up to 8 lines, not the textbook 2</dd></div>
+      </dl>
+    </section>
+
+    <!-- RESULTS AGAINST THE OBJECTIVE -->
+    <section class="pp-section">
+      <h2><small>Results</small>How it measured up</h2>
+      <div class="pp-split">
+        <figure class="fig">
+          <div class="annot">
+            <a class="zoom" href="../assets/img/odmr-pipeline/b-vs-current.png" target="_blank" rel="noopener"><img src="../assets/img/odmr-pipeline/b-vs-current.png" width="1400" height="1042" loading="lazy" alt="Magnetic field at the sample versus coil current. Measured points rise from 0 to about 3.1 millitesla, below the dashed theory line; the same points shifted by 0.61 millitesla fall on the theory line from 0.4 to 0.8 amps." /></a>
+            <span class="pin" style="left:62%;top:55.7%">1</span>
+            <span class="pin" style="left:60%;top:25.5%">2</span>
+            <span class="pin" style="left:18.7%;top:58.7%">3</span>
+            <span class="pin" style="left:44.6%;top:61.4%">4</span>
+          </div>
+          <figcaption><b>Figure 4.</b> Measured vs. predicted field. Blue: measured. Dashed: coil theory (1σ band). Purple: measured plus a constant 0.61&nbsp;mT offset.
+            <ol>
+              <li>Raw readings fall below theory at every current.</li>
+              <li>With the offset, 0.4 to 0.8&nbsp;A match within about 1.1σ.</li>
+              <li>0.1&nbsp;A: the offset overshoots; readings can't go below the diamond's built-in (strain) splitting.</li>
+              <li>0.3&nbsp;A: a 3.1σ outlier.</li>
+            </ol>
+          </figcaption>
+        </figure>
+        <div class="pp-text">
+          <ul class="goals">
+            <li><span class="v met">✓ Met</span><strong>Clean without distorting.</strong> The data-derived threshold matched my hand-tuned split (847 of 1,000 kept).</li>
+            <li><span class="v met">✓ Met</span><strong>Detect the resonance.</strong> A 7.48% dip at zero field, close to the roughly 8% in the literature.</li>
+            <li><span class="v met">✓ Met</span><strong>Resolve the splitting.</strong> Grew steadily with current in all 10 conditions, up to 8 lines, every fit R² ≥ 0.97.</li>
+            <li><span class="v part">◐ Partly met</span><strong>Match coil theory.</strong> Readings ran low (theory 11× higher at 0.1&nbsp;A, 1.25× at 0.9&nbsp;A). One 0.61&nbsp;mT offset fits the gap (R² = 0.984); 0.3&nbsp;A stays a 3.1σ outlier.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="lesson"><h3>What I learned</h3><p><strong>Build tools that make problems visible.</strong> My first program showed no convincing resonance (Figure 6); kept-vs-rejected plots and a read-only instrument check found most fixes. And a gap with theory is a result to explain: replacing a “sample flush with the coil” shortcut with the full coil geometry cut the gap from about 30σ to 3 to 13σ.</p></div>
+    </section>
+
+    <!-- 5. TECHNICAL DETAILS -->
+    <section class="pp-section">
+      <h2><small>Technical details</small>How it works</h2>
+      <div class="pp-gallery">
+        <figure class="fig">
+          <div class="annot">
+            <a class="zoom" href="../assets/img/odmr-pipeline/kept-vs-rejected.png" target="_blank" rel="noopener"><img src="../assets/img/odmr-pipeline/kept-vs-rejected.png" width="1440" height="1260" loading="lazy" alt="Two stacked panels of raw sweeps at zero field, 60 of each group drawn. Kept sweeps form a tight band around 0.5 volts with a faint dip; rejected sweeps contain single-sample spikes reaching plus and minus 1 volt." /></a>
+            <span class="pin" style="left:39.5%;top:84%">1</span>
+            <span class="pin" style="left:57.6%;top:9.5%">2</span>
+          </div>
+          <figcaption><b>Figure 5.</b> Process: the cleaning step on the real 0&nbsp;A capture.
+            <ol>
+              <li>Rejected sweeps carry single-sample spikes to +1&nbsp;V and −1&nbsp;V.</li>
+              <li>Kept sweeps hint at the dip. The threshold (40.2&nbsp;mV here) comes from each capture's own jump statistics.</li>
+            </ol>
+          </figcaption>
+        </figure>
+        <figure class="fig">
+          <div class="annot">
+            <a class="zoom" href="../assets/img/odmr-pipeline/before-after.png" target="_blank" rel="noopener"><img src="../assets/img/odmr-pipeline/before-after.png" width="1440" height="1520" loading="lazy" alt="Before: the contrast plot from my first program on September 10, 100 sweeps, a jagged line between 0 and minus 0.4 percent with no clear dip. After: the final zero-field spectrum, a smooth double dip 7.48 percent deep; a shaded strip shows that the entire before plot would fit in its top 0.4 percent." /></a>
+            <span class="pin" style="left:83%;top:36%">1</span>
+            <span class="pin" style="left:90%;top:66.5%">2</span>
+          </div>
+          <figcaption><b>Figure 6.</b> Process: my first program (Sep 10, from my lab notebook) vs. the final pipeline, both as percent contrast.
+            <ol>
+              <li>Sep 10: no dip stands out from the noise.</li>
+              <li>Shaded: the top plot's whole range, the final spectrum's top 0.4%.</li>
+            </ol>
+          </figcaption>
+        </figure>
+      </div>
+      <details class="deep"><summary>Methods in depth</summary>
+        <div class="pp-text">
+          <h3>Acquisition</h3>
+          <p>A function generator drives a slow sawtooth into the microwave source's tuning input, sweeping about 0.34&nbsp;GHz across the resonance. The generator's real output did not match its display, so calibrations use scope-measured voltages. A read-only diagnostic script showed the scope's trigger had been left in free-running AUTO mode, with its level only about 25&nbsp;mV above the ramp's noisy minimum. It now triggers on the sawtooth's rising edge at a level 15% of the ramp's height above its measured minimum, in NORMAL sweep mode, and records about 10,000 samples per channel. We calibrated voltage to frequency with a frequency counter, averaging three slow-motion-video readings per sweep endpoint (2.6645 and 3.0020&nbsp;GHz). The code reuses the intercept from an earlier calibration that the notebook marks as inaccurate, which puts plotted frequencies roughly 50&nbsp;MHz above the counter readings. That shifts every line equally, so line spacings and fields are unaffected.</p>
+          <h3>Cleaning</h3>
+          <p>A real resonance cannot cause a fast jump: its steepest slope works out to about 0.06&nbsp;mV per sample, far below the detector noise, so any threshold above the noise floor is safe. The textbook median/MAD sigma-clipping rule collapsed to zero because the signal is heavily quantized (59% of sample-to-sample jumps are exactly zero). A 99.5th-percentile threshold rejected about 95% of sweeps, because each sweep's worst jump is a maximum over roughly 9,700 samples. On an earlier capture the 99.9th percentile reproduced my hand-tuned split exactly (847 of 1,000 kept) and the same −7.78% dip, so I shipped it as an option and documented both failed attempts in the code. Surviving sweeps get a 5-sample rolling-median despike. Figure 3's gray trace is the capture's first sweep, with only the spike filter applied.</p>
+          <h3>Frequency axis and averaging</h3>
+          <p>At high record lengths, each sample's true voltage step is smaller than the channel noise, so sorting raw samples by frequency scrambled their order and made a jagged spectrum. Fitting each sweep's ramp with a straight line restored a smooth, monotonic axis. Sweeps are then interpolated onto a common 1,000-point grid, averaged, and reported as percent below the off-resonance baseline, with the standard error propagated into the contrast.</p>
+          <h3>Adaptive fit</h3>
+          <p>Each spectrum is fit to a sum of N Lorentzian dips (SciPy <code>curve_fit</code>), with N set by peak-finding on the data and capped at 8 (4 crystal axes × 2 spin states). Every line gets its own depth; the linewidth is shared. Two fixed two-line fits failed first: seeded on the deepest dips, the fit locked onto the least field-sensitive pair and drifted instead of widening; seeded on the outer dips, it collapsed into two needle-thin lines sitting on just two data points. A shared-depth version then missed 0.4&nbsp;A's shoulders (about 1% deep; R² 0.963, vs. 0.993 with per-line depth).</p>
+          <h3>Field and uncertainty</h3>
+          <p>The outermost pair's spacing S gives the field through S/2 = √(E² + (γB)²), with γ = 28.025&nbsp;GHz/T and the strain term E taken from the 0&nbsp;A fit. Readings span 0 to 3.1&nbsp;mT, up to about 60× Earth's field. Theory uses the exact finite-solenoid field at the sample's 0.75&nbsp;cm standoff beyond the coil's end. An earlier version assumed the sample sat flush with the coil (and used slightly different coil dimensions), which had left a discrepancy of about 30σ. Each measured field carries its fit uncertainty (from the splitting and E). The theory band combines the supply's datasheet accuracy and ruler readings (±0.07&nbsp;cm). At 0.5&nbsp;A the predicted field is 2.14 ± 0.14&nbsp;mT, and the standoff term (0.13&nbsp;mT) dominates that budget. At 0.7&nbsp;A the measured field is 2.365 ± 0.003&nbsp;mT. That ± is fit precision only: the voltage-to-frequency slope's own uncertainty, which would scale every measured field, is not yet propagated, though the repo documents a method for it. The fitted 0.61&nbsp;mT offset is too large to be Earth's field. At 0.1&nbsp;A the offset model expects a net field of about −0.18&nbsp;mT, which readings cannot show because of the strain floor.</p>
+          <h3>What it took to get a clean spectrum</h3>
+          <p>Getting a clean spectrum took fixes on both sides: detector gain and a sign bug to see the dip at all, then locking the trigger and unscrambling the frequency axis to make it sharp. The same habit fixed the fits: when a model collapses, count what the data shows before adding complexity. The gap with theory that remains (3 to 13σ) is consistent with stray magnetization near the sample, which I have not tested yet.</p>
+          <h3>What I started from</h3>
+          <p>My acquisition and analysis scripts follow the design of a LabVIEW program in the lab handout, and the fit extends the handout's two- and four-dip models, which give every line the same depth. What I added on top: the data-derived glitch threshold, the per-sweep frequency-axis fit, the adaptive N-line fit with per-line depths, and the uncertainty propagation.</p>
+        </div>
+      </details>
+    </section>
+
+    <nav class="pp-next">
+      <a href="donor-dashboard.html"><span>← Previous</span><strong>A donor dashboard that shows a crime victim nonprofit which donors come back</strong></a>
+      <a href="mosaic-aesthetics.html"><span>Next →</span><strong>Measuring why people like mosaic art</strong></a>
+    </nav>
+  </main>
+
+  <footer class="wrap footer">
+    <p>© 2026 Jimmy Gu · <a href="mailto:g.jimmy@wustl.edu">g.jimmy@wustl.edu</a> · <a href="https://www.linkedin.com/in/jimmy-yufan-gu" target="_blank" rel="noopener">LinkedIn ↗</a> · <a href="https://github.com/ygu60" target="_blank" rel="noopener">GitHub ↗</a> · <a href="../assets/Jimmy_Gu_Portfolio.pdf" download>PDF portfolio ↓</a></p>
+    <p>Outside of work: running about 50 miles a week, judo, and BJJ.</p>
+  </footer>
+</body>
+</html>

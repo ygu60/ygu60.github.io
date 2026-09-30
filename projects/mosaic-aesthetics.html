@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Measuring Why People Like Mosaic Art: A Benchmarked 982-Image Feature Pipeline | Jimmy Gu</title>
+  <meta name="description" content="Undergraduate neuroaesthetics research: a MATLAB pipeline that turns 982 mosaic artworks into 172 measurable features, benchmarked against a published study on 826 paintings, with segmentation experiments and a preliminary LASSO analysis of pilot ratings." />
+  <link rel="canonical" href="https://ygu60.github.io/projects/mosaic-aesthetics.html" />
+  <link rel="icon" href="../favicon.ico" sizes="32x32" />
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+  <meta property="og:type" content="article" />
+  <meta property="og:site_name" content="Jimmy Gu" />
+  <meta property="og:title" content="Measuring why people like mosaic art: a benchmarked 982-image feature pipeline | Jimmy Gu" />
+  <meta property="og:description" content="A MATLAB pipeline that turns 982 mosaics into 172 features each, benchmarked against a published study of paintings, feeding a preliminary pilot analysis of aesthetic ratings." />
+  <meta property="og:url" content="https://ygu60.github.io/projects/mosaic-aesthetics.html" />
+  <meta property="og:image" content="https://ygu60.github.io/assets/img/mosaic-aesthetics/feature-anatomy.jpg" />
+  <meta property="og:image:alt" content="A medieval mosaic of an angel's head beside a histogram of its pixel lightness, with six statistics marked." />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/open-props.min.css" />
+  <link rel="stylesheet" href="../styles.css" />
+  <style>
+    /* Study-design flow (Figure 3) */
+    .flow { list-style: none; margin: 0; padding: var(--size-4); display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; background: #fbfbfa; }
+    .flow li { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-3); padding: 10px 12px 12px; }
+    .flow li.me { border: 2px solid var(--accent); background: var(--accent-soft); }
+    .flow li.rd { grid-column: 1 / -1; border-style: dashed; }
+    .flow li.shared { border: 2px solid var(--accent); }
+    .flow .shared .step em { color: #2a3cb8; font-weight: 500; }
+    .flow .step { display: flex; justify-content: space-between; gap: 6px; font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-2); }
+    .flow .me .step em { color: #2a3cb8; font-style: normal; font-weight: 500; }
+    .flow .step em { font-style: normal; }
+    .flow b { display: block; font-family: var(--serif); font-weight: 400; font-size: 1.7rem; line-height: 1.05; margin: 6px 0 4px; color: var(--ink); }
+    .flow .d { display: block; font-size: 0.8rem; line-height: 1.35; color: #33373f; }
+    .deep ul + p { margin-top: var(--size-3); }
+    /* Figure 6 is a simple two-bar chart: a smaller image, caption beside it */
+    @media (min-width: 861px) { .fig.cap-side.img-sm { grid-template-columns: 1.2fr 1fr; } }
+    /* Figures 1 and 5 swap to tall layouts (with their own pin positions) on phones */
+    .only-narrow { display: none; }
+    /* Figures 2 and 4 swap images through <picture> on phones, so each image has its own pins */
+    .pin.m { display: none; }
+    /* "What I did": full-width Figure 2, then bullets in two columns */
+    .did-list { margin-top: var(--size-5); }
+    @media (min-width: 861px) {
+      .pp-text ul.did { display: block; columns: 2; column-gap: var(--size-7); }
+      .pp-text ul.did li { break-inside: avoid; margin-bottom: 10px; }
+    }
+    /* Keep the H1 to 3 lines on desktop and tablet, with "982-image" unbroken */
+    @media (min-width: 861px) { .pp-hero h1 { font-size: clamp(2.2rem, 3.9vw, 3.05rem); } }
+    @media (max-width: 600px) {
+      .flow { grid-template-columns: 1fr 1fr; padding: var(--size-3); }
+      .only-wide { display: none; }
+      .only-narrow { display: block; }
+      .pin.d { display: none; }
+      .pin.m { display: grid; }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-blobs" aria-hidden="true"><span></span><span></span><span></span></div>
+
+  <header class="nav">
+    <div class="wrap nav-inner">
+      <a href="../index.html" class="logo">Jimmy Gu</a>
+      <nav>
+        <a href="../index.html#work">Work</a>
+        <a href="../index.html#about">About</a>
+        <a href="../index.html#contact">Contact</a>
+        <a href="../assets/Jimmy_Gu_Portfolio.pdf" download>PDF portfolio</a>
+        <a href="../assets/Jimmy_Gu_Resume.pdf" class="btn btn-sm" target="_blank" rel="noopener">Resume ↗</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap pp">
+    <a href="../index.html#work" class="back">← All projects</a>
+
+    <!-- 1 + 2. TITLE & OUTCOME -->
+    <header class="pp-hero">
+      <div>
+        <p class="kicker">Neuroaesthetics research · WashU · 2025</p>
+        <h1>Measuring why people like mosaic art: a benchmarked <span style="white-space:nowrap">982-image</span> feature pipeline</h1>
+        <p class="pp-outcome">I wrote the MATLAB feature extractor for a WashU study of why people like mosaics. It turns <strong>982 mosaics</strong> into <strong>172 features</strong> each (color, brightness, fine vs. coarse detail). Benchmarked against a published study, it reproduces the original's average color and brightness measures (9 of 18 global features at |r| ≥ 0.7), not yet its hue-count, blur or segment-shape features. On 70 pilot images, the team ranked features against ratings with my table.</p>
+        <dl class="pp-facts">
+          <div><dt>My role</dt><dd>Undergraduate researcher; image feature extraction and benchmarking</dd></div>
+          <div><dt>Team</dt><dd>Research team led by Prof. Ralf Wessel (WashU Physics)</dd></div>
+          <div><dt>Timeline</dt><dd>Jan to Aug 2025</dd></div>
+          <div><dt>Tools</dt><dd>MATLAB, C++ MEX, kernel graph cuts, SRM, SAM2</dd></div>
+        </dl>
+        <div class="actions">
+          <a class="btn btn-ghost" href="https://doi.org/10.1038/s41562-021-01124-6" target="_blank" rel="noopener">Study we built on ↗</a>
+        </div>
+      </div>
+      <figure class="fig fig-hero">
+        <div class="annot only-wide">
+          <img src="../assets/img/mosaic-aesthetics/feature-anatomy.jpg" width="1000" height="880" alt="A medieval mosaic by Pietro Cavallini of an angel's head next to a histogram of its pixel lightness. Six of the 18 statistics are marked on the histogram: min 2.4, median 36.0, mean 38.6, IQR 31.4, max 97.8, and a 1st to 99th percentile range of 88.9. A row below reads: 18 statistics per channel times 9 channels, plus 3 spectral centroids, plus 7 hue-harmony models, equals 172 features per image." />
+          <span class="pin" style="left:4.2%;top:25.5%">1</span>
+          <span class="pin" style="left:80.5%;top:37.5%">2</span>
+          <span class="pin" style="left:81%;top:94%">3</span>
+        </div>
+        <div class="annot only-narrow">
+          <img src="../assets/img/mosaic-aesthetics/feature-anatomy-narrow.jpg" width="800" height="1488" alt="A medieval mosaic by Pietro Cavallini of an angel's head above a histogram of its pixel lightness, with six of the 18 statistics marked, and a summary: 18 statistics times 9 channels, plus 3 spectral centroids, plus 7 hue-harmony models, equals 172 features per image." />
+          <span class="pin" style="left:33.1%;top:17.6%">1</span>
+          <span class="pin" style="left:71.9%;top:55.8%">2</span>
+          <span class="pin" style="left:71.3%;top:93.6%">3</span>
+        </div>
+        <figcaption><b>Figure 1.</b> What my extractor computes, for one image and one channel. Values are this image's row in my feature table.
+          <ol>
+            <li>Input: Pietro Cavallini, <em>Annunciation</em> (detail), 1296 to 1300, public domain, resized to 256 × 256.</li>
+            <li>Six of the 18 statistics, on the lightness histogram.</li>
+            <li>Repeated on 9 color channels, plus frequency and color-harmony features.</li>
+          </ol>
+        </figcaption>
+      </figure>
+    </header>
+
+    <div class="kpis">
+      <div><strong>982</strong><span>Mosaic images in the feature table (979 extracted cleanly)</span></div>
+      <div><strong>172</strong><span>Features per image</span></div>
+      <div><strong>23 / 83</strong><span>Published-study features my statistics match (30 re-running its code)</span></div>
+      <div><strong>70 × 5</strong><span>Pilot images × ratings each</span></div>
+    </div>
+
+    <!-- 3. EXPERIENCE, LEARNING & SKILLS -->
+    <section class="pp-section">
+      <h2><small>My contribution</small>What I did</h2>
+      <figure class="fig">
+        <div class="annot">
+          <picture><source media="(max-width: 600px)" srcset="../assets/img/mosaic-aesthetics/validation-narrow.png" width="700" height="848" /><img src="../assets/img/mosaic-aesthetics/validation.png" width="1300" height="660" alt="Bar chart of the published study's 83 features in four families, each bar showing its best absolute correlation with any of my features. 30 bars reach the dashed line at |r| = 0.7: 9 of 18 global color and brightness features, 3 of 7 hue-harmony models, 17 of 53 segment-based features, and 1 of 5 high-level human-rated features. Seven of the segment-based matches are hatched: their best match is an SRM region, entropy, or aspect-ratio feature that is not in the final 172. Two hue-model bars are n/a." /></picture>
+          <span class="pin d" style="left:19.5%;top:40%">1</span>
+          <span class="pin d" style="left:39%;top:30%">2</span>
+          <span class="pin d" style="left:70%;top:45%">3</span>
+          <span class="pin m" style="left:27%;top:45%">1</span>
+          <span class="pin m" style="left:47%;top:33.5%">2</span>
+          <span class="pin m" style="left:75%;top:50%">3</span>
+        </div>
+        <figcaption><b>Figure 2.</b> Benchmark: each of the published study's 83 features and its best |r| with any of mine, on its 826 paintings.
+          <ol>
+            <li>Global color and brightness: 9 of 18 match, the part of the table I trust.</li>
+            <li>Hatched: ported region code I later set aside; it checks my port, not new measurements.</li>
+            <li>Most segment-shape features are not matched yet.</li>
+          </ol>
+        </figcaption>
+      </figure>
+      <div class="pp-text did-list">
+        <ul class="did">
+          <li><strong>Revived</strong> the original study's MATLAB code on Windows: rebuilt its C++ binaries and checked outputs against stored values (Figure 5).</li>
+          <li><strong>Engineered</strong> a new extractor: 18 statistics on each of 9 color channels plus FFT spectral centroids, reusing the original's 7 hue-harmony models (Figure 1).</li>
+          <li><strong>Benchmarked</strong> it against the original 83 features (Figure 2): 23 matched in my first pass, 30 with its hue and region code ported.</li>
+          <li><strong>Diagnosed</strong> randomness: the hue-model choice changed in 2 of 100 repeat runs (Figure 6); graph-cut segments shift too.</li>
+          <li><strong>Evaluated</strong> graph cuts and SAM2 for tile-level features; prototyped HOG features for <em>andamento</em>, the tile flow.</li>
+          <li><strong>Delivered</strong> the feature table for our pilot analysis (Figure 4); co-authored our poster and abstract with Cici Zhao and Prof. Ralf Wessel, presented at the Spring 2026 Undergraduate Research Symposium.</li>
+        </ul>
+        <ul class="tags"><li><a href="../index.html?skill=MATLAB#work">MATLAB</a></li><li><a href="../index.html?skill=Image%20processing#work">Image processing</a></li><li><a href="../index.html?skill=Feature%20engineering#work">Feature engineering</a></li><li><a href="../index.html?skill=Data%20validation#work">Data validation</a></li><li><a href="../index.html?skill=Benchmarking#work">Benchmarking</a></li><li><a href="../index.html?skill=Correlation%20analysis#work">Correlation analysis</a></li><li><a href="../index.html?skill=LASSO%20regression#work">LASSO regression</a></li><li><a href="../index.html?skill=Segmentation#work">Segmentation</a></li><li><a href="../index.html?skill=FFT#work">FFT</a></li><li><a href="../index.html?skill=Reproducibility#work">Reproducibility</a></li></ul>
+      </div>
+    </section>
+
+    <!-- 4. MOTIVATION & CONSTRAINTS -->
+    <section class="pp-section">
+      <h2><small>Motivation</small>Why it mattered</h2>
+      <div class="pp-split flip">
+        <figure class="fig">
+          <ol class="flow" aria-label="Study design, in six steps plus a research branch">
+            <li><span class="step">01 <em>Team</em></span><b>982</b><span class="d">mosaic images from about 70 artists plus a “Byzantine” set</span></li>
+            <li class="me"><span class="step">02 <em>Me</em></span><b>256²</b><span class="d">resize; convert to RGB, CIELAB and HSV</span></li>
+            <li class="me"><span class="step">03 <em>Me</em></span><b>172</b><span class="d">features per image: color, frequency, hue harmony</span></li>
+            <li class="me"><span class="step">04 <em>Me</em></span><b>826</b><span class="d">paintings from the original study: the benchmark (Figure&nbsp;2)</span></li>
+            <li><span class="step">05 <em>Team</em></span><b>70 × 5</b><span class="d">pilot mosaics × online ratings (1 to 4 scale)</span></li>
+            <li class="shared"><span class="step">06 <em>Team + me</em></span><b>LASSO</b><span class="d">rank features against ratings, using my table</span></li>
+            <li class="me rd"><span class="step">R&amp;D <em>Me</em></span><span class="d">Tile and region features: graph cuts, SRM, SAM2, HOG flow. Explored, not yet in the final&nbsp;172.</span></li>
+          </ol>
+          <figcaption><b>Figure 3.</b> Study design and where my work fits. Blue steps were mine; white steps were run by teammates; the outlined step was a team analysis of my feature table.</figcaption>
+        </figure>
+        <div class="pp-text">
+          <p>A 2021 study by Kyo Iigaya (a collaborator on this project) and colleagues predicted people's ratings of <em>paintings</em> from simple and complex visual features. Does that hold for mosaics, with their tiles (<em>tesserae</em>) and tile flow (<em>andamento</em>)?</p>
+          <p><strong>Objective</strong> for my piece: build a feature table for about a thousand images, benchmark it against that study, and hand it to a model with only a few hundred ratings.</p>
+        </div>
+      </div>
+      <dl class="constraints">
+        <div><dt>Team</dt><dd>9 on the roster, led by Prof. Ralf Wessel; I built low-level features with Prady Sepulveda</dd></div>
+        <div><dt>Timeline</dt><dd>Research Jan to Aug 2025 (spring, then summer); poster and abstract presented at the Spring 2026 Undergraduate Research Symposium</dd></div>
+        <div><dt>Ratings cost</dt><dd>~$10 per participant-hour on Prolific (team estimate); pilot: 350 ratings</dd></div>
+        <div><dt>Tooling</dt><dd>Legacy MATLAB/C++ code built for macOS, rebuilt for Windows; no labeled data for deep models</dd></div>
+      </dl>
+    </section>
+
+    <!-- RESULTS AGAINST THE OBJECTIVE -->
+    <section class="pp-section">
+      <h2><small>Results</small>How it measured up</h2>
+      <div class="pp-split">
+        <figure class="fig">
+          <div class="annot">
+            <picture><source media="(max-width: 600px)" srcset="../assets/img/mosaic-aesthetics/pilot-results-narrow.png" width="700" height="1100" /><img src="../assets/img/mosaic-aesthetics/pilot-results.png" width="1100" height="860" alt="Two ranked bar charts from the 70-image pilot. Top: the five features most correlated with ratings, all near 0.33 to 0.35, led by red channel minimum and lightness spread. Bottom: the five largest average LASSO weights, 0.19 to 0.24, led by green-red histogram energy and saturation mode." loading="lazy" /></picture>
+            <span class="pin d" style="left:96.5%;top:22%">1</span>
+            <span class="pin d" style="left:96%;top:76%">2</span>
+            <span class="pin m" style="left:90%;top:28%">1</span>
+            <span class="pin m" style="left:88%;top:79%">2</span>
+          </div>
+          <figcaption><b>Figure 4.</b> Preliminary pilot results (70 mosaics, 5 ratings each), as reported on our poster.
+            <ol>
+              <li>Simple color and brightness statistics lead, but all correlations are modest (|r| 0.33 to 0.35); with 172 features and 70 images, this could be chance.</li>
+              <li>LASSO, a regression that keeps few features, ranks a different set of simple statistics.</li>
+            </ol>
+          </figcaption>
+        </figure>
+        <div class="pp-text">
+          <ul class="goals">
+            <li><span class="v met">✓ Met</span><strong>Feature table for about 1,000 images.</strong> 982 images, 979 extracted cleanly, 172 features each.</li>
+            <li><span class="v part">◐ Partly</span><strong>Reproduce the published baseline.</strong> Average color and brightness, yes (9 of 18 global features); hue-count, blur and segment shape, not yet.</li>
+            <li><span class="v no">○ Not yet</span><strong>Mosaic-specific tile and flow features.</strong> Graph cuts, SRM, SAM2 and HOG explored; none in the final 172.</li>
+            <li><span class="v part">◐ Preliminary</span><strong>Find features that track ratings.</strong> The pilot ranks candidates; with no held-out or chance-level test yet, no model is validated.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="lesson"><h3>What I learned</h3>
+        <p><strong>Validation had to come before modeling.</strong> Most of my time went into checking numbers: rebuilding legacy code, matching it feature by feature, chasing randomness in two algorithms. That is how I know which parts of the table to trust. When my weekly updates were not landing, I also began opening them with plain definitions of each feature.</p>
+      </div>
+    </section>
+
+    <!-- 5. TECHNICAL DETAILS -->
+    <section class="pp-section">
+      <h2><small>Technical details</small>How it works</h2>
+      <div class="pp-gallery">
+        <figure class="fig wide">
+          <div class="annot only-wide">
+            <img src="../assets/img/mosaic-aesthetics/graphcut-aviator.jpg" width="1110" height="498" alt="Two panels from my MATLAB run of the original graph-cut segmentation on Malevich's painting An Aviator. Left: green and purple region outlines drawn over the painting. Right: the same result as a flat map with five colors; each color is one segment, and the cream segment appears as many separate patches across the canvas." loading="lazy" />
+            <span class="pin" style="left:14.4%;top:60.2%">1</span>
+            <span class="pin" style="left:62.2%;top:54.2%">2</span>
+          </div>
+          <div class="annot only-narrow">
+            <img src="../assets/img/mosaic-aesthetics/graphcut-aviator-narrow.jpg" width="543" height="988" alt="The same two panels stacked: region outlines over Malevich's An Aviator, then the flat five-color region map, where the cream segment appears as many separate patches." loading="lazy" />
+            <span class="pin" style="left:29.5%;top:29.1%">1</span>
+            <span class="pin" style="left:22.7%;top:76.9%">2</span>
+          </div>
+          <figcaption><b>Figure 5.</b> Process: reviving the original segmentation, which returned only numbers, by rendering its regions (Kazimir Malevich, <em>An Aviator</em>, 1914, public domain; an example shipped with the code).
+            <ol>
+              <li>Outlines follow color edges, not objects.</li>
+              <li>Every cream patch is one scattered segment, so I also tested SRM, which merges only neighboring regions.</li>
+            </ol>
+          </figcaption>
+        </figure>
+        <figure class="fig wide cap-side img-sm">
+          <picture><source media="(max-width: 600px)" srcset="../assets/img/mosaic-aesthetics/hue-runs-narrow.png" width="700" height="597" /><img src="../assets/img/mosaic-aesthetics/hue-runs.png" width="1100" height="860" alt="Bar chart titled One painting, 100 identical runs. For each of the 7 hue-harmony templates (i, ii, v, Y, L, X, T), the number of runs that chose it: T 98, X 2, all others 0." loading="lazy" /></picture>
+          <figcaption><b>Figure 6.</b> Process: diagnosing randomness. Same image, same code, 100 runs: the hue-harmony model changed in 2 (re-plotted from my MATLAB test output). I ran it to trace 67 images whose hue model disagreed with the original's.</figcaption>
+        </figure>
+      </div>
+
+      <details class="deep"><summary>Methods in depth</summary>
+        <div class="pp-text">
+          <h3>Dataset</h3>
+          <p>982 mosaic images (931 JPG, 31 PNG, 20 JPEG), each named with a 5-digit ID and its source, for example <code>00100byzantine</code>. The files come from about 70 artists plus a set the team labeled “Byzantine”. The team assembled the collection; I built the feature table on top of it.</p>
+          <h3>Preprocessing</h3>
+          <p>Each image is resized to 256 × 256, scaled to [0, 1], and converted to CIELAB, HSV, and HSL. The square resize distorts proportions, so I also wrote an aspect-preserving version that pads with NaN and returns a mask of real pixels; it is not yet used in the final table.</p>
+          <h3>Features (172 per image)</h3>
+          <ul>
+            <li><strong>First-order statistics (162):</strong> 18 per channel on 9 channels: mean, median, mode, min, max, range, 1st to 99th percentile range, standard deviation, IQR, median absolute deviation, skewness, kurtosis, coefficient of variation, RMS, 10% trimmed mean, histogram entropy, histogram energy, and Wasserstein distance to a standard normal.</li>
+            <li><strong>Spectral centroid (3):</strong> the power-weighted average spatial frequency of each CIELAB channel from a 2-D FFT. Plainly: does the image's detail sit in fine tile texture or in broad color fields?</li>
+            <li><strong>Hue-harmony models (7):</strong> the original study's code for which of 7 classic color-harmony templates (Li &amp; Chen, 2009) fits the image best, stored as 7 one-hot columns. The fit starts from random points, which is the source of the stochasticity I traced.</li>
+          </ul>
+          <p>Ten images get NaN only for hue and saturation skewness and kurtosis, where those statistics come out undefined; three images errored and are kept as all-NaN rows instead of disappearing, so 979 of 982 rows are complete or nearly complete.</p>
+          <h3>Benchmark against the original study (Figure 2)</h3>
+          <p>The original study's 826 paintings (abstract, color field, cubism, impressionism) came with 83 precomputed features. I computed my features on the same images and, for each original feature, kept the best absolute correlation |r| with any new feature. My first pass used 165 features (first-order statistics and spectral centroids, all of them in the final table) and matched 23 of 83 at |r| ≥ 0.7: 9 global, 1 high-level, and 13 segment-based. I then added the original study's hue-model code and my port of its SRM region, global entropy, and aspect-ratio code, and 30 of 83 matched (Figure 2). In that run, 10 of the 30 best matches (the 3 hue models and the 7 hatched bars) come from the original's own computations, so they confirm my port works rather than add new measurements. The SRM, entropy, and aspect-ratio features are not in the final table, and the 23 solid bars are a different set from my first-pass 23. The final 172 on their own have not been re-benchmarked. Two hue-model features are n/a (no correlation could be computed). I also asked whether 0.7 is the right threshold, since at 826 images every match that high is significant (p ≪ 10⁻¹⁰⁰). Some matches are proxies rather than copies: a human-rated “temperature” score tracks the image's mean blue-yellow value (|r| = 0.70), and the horizontal center of the largest segment is best matched by image aspect ratio (|r| = 0.78).</p>
+          <h3>Randomness (Figure 6)</h3>
+          <p>When I compared hue models with the original study's, 67 images disagreed. The template fit starts from random points; on one test image, 98 of 100 repeat runs chose the same model. Graph cuts start from randomly initialized color clusters, so segment features also vary: across repeat runs on the example paintings, the second-largest segment varied far more than the largest, and the largest single swing was 139% in the largest segment's mass skew (a shape statistic).</p>
+          <h3>Segmentation and flow (Figure 5)</h3>
+          <p>Kernel graph cuts (Salah et al., 2010) cluster pixels by color with a smoothness penalty α, and the original pipeline adjusts α until at least three segments appear. Their segments can be spatially scattered and depend on initialization, so I also tested statistical region merging (SRM), which only merges neighboring regions. In team reviews we found that algorithmic segments do not match how people divide a picture; for example, they do not isolate faces. For tile-level features I evaluated SAM2 alongside graph cuts. For andamento, I tested HOG (histograms of oriented gradients) at 8, 16, and 32 pixel cells and prototyped an orientation-coherence score across SRM regions. These segmentation and flow features were explored but are not in the final 172-feature table.</p>
+          <h3>Pilot analysis (Figure 4)</h3>
+          <p>Raters used a 1 to 4 scale (“not at all” to “very much”) with attention checks. Using my feature table, we ranked features by their correlation with the ratings and by average absolute weight in LASSO, a regression that shrinks weak features to exactly zero; this analysis ran in Python. No held-out test score or chance-level (permutation) comparison is reported yet, which is why I call these results preliminary.</p>
+          <h3>Next steps</h3>
+          <p>Fix random seeds and log run-to-run variance from the start, re-benchmark the final 172 features on their own, bring the segmentation and flow features into the table, and test the model on held-out images once the full study (about 1,500 planned participants) is in.</p>
+        </div>
+      </details>
+    </section>
+
+    <nav class="pp-next">
+      <a href="odmr-pipeline.html"><span>← Previous</span><strong>Turning 10,000 noisy sweeps into a working diamond magnetic-field sensor</strong></a>
+      <a href="quant-alpha.html"><span>Next →</span><strong>Stress-testing trading strategies</strong></a>
+    </nav>
+  </main>
+
+  <footer class="wrap footer">
+    <p>© 2026 Jimmy Gu · <a href="mailto:g.jimmy@wustl.edu">g.jimmy@wustl.edu</a> · <a href="https://www.linkedin.com/in/jimmy-yufan-gu" target="_blank" rel="noopener">LinkedIn ↗</a> · <a href="https://github.com/ygu60" target="_blank" rel="noopener">GitHub ↗</a> · <a href="../assets/Jimmy_Gu_Portfolio.pdf" download>PDF portfolio ↓</a></p>
+    <p>Outside of work: running about 50 miles a week, judo, and BJJ.</p>
+  </footer>
+</body>
+</html>

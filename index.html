@@ -3,15 +3,28 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Jimmy Gu | Data Analyst &amp; Engineer</title>
-  <meta name="description" content="Projects by Jimmy Gu: data pipelines, statistical models, and analytics dashboards. Physics (biophysics) at WashU." />
+  <title>Jimmy Gu | Data Analyst &amp; Data/Research Engineering Portfolio</title>
+  <meta name="description" content="Portfolio of Jimmy Gu, WashU physics (biophysics) student graduating December 2026: data pipelines, statistical validation, and a nonprofit donor dashboard. Open to data analyst and data/research engineering roles." />
+  <link rel="canonical" href="https://ygu60.github.io/" />
+  <link rel="icon" href="favicon.ico" sizes="32x32" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Jimmy Gu" />
+  <meta property="og:title" content="Jimmy Gu | Data Analyst &amp; Data/Research Engineering Portfolio" />
+  <meta property="og:description" content="WashU physics (biophysics) student, graduating December 2026. Four projects that take messy real-world data from raw capture to a tested result: data pipelines, statistical validation, and a nonprofit donor dashboard." />
+  <meta property="og:url" content="https://ygu60.github.io/" />
+  <meta property="og:image" content="https://ygu60.github.io/assets/img/og-cover.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Jimmy Gu, data analyst and data/research engineering portfolio, with charts from four projects." />
+  <meta name="twitter:card" content="summary_large_image" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="https://unpkg.com/open-props@1.7.23/open-props.min.css" />
+  <link rel="stylesheet" href="assets/css/open-props.min.css" />
   <link rel="stylesheet" href="styles.css" />
 </head>
-<body>
+<body class="home">
   <div class="bg-blobs" aria-hidden="true"><span></span><span></span><span></span></div>
 
   <header class="nav">
@@ -21,107 +34,191 @@
         <a href="#work">Work</a>
         <a href="#about">About</a>
         <a href="#contact">Contact</a>
+        <a href="assets/Jimmy_Gu_Portfolio.pdf" download>PDF portfolio</a>
         <a href="assets/Jimmy_Gu_Resume.pdf" class="btn btn-sm" target="_blank" rel="noopener">Resume ↗</a>
       </nav>
     </div>
   </header>
 
   <main id="top">
-    <!-- INTRO (kept short so projects sit near the top) -->
-    <section class="intro wrap">
-      <p class="pill"><span class="dot"></span> Open to data analyst &amp; data engineering roles</p>
-      <h1>I build <em>data pipelines</em> and models you can&nbsp;trust.</h1>
-      <p class="lead">
-        I'm a physics (biophysics) student at WashU, graduating December 2026. Below are projects where I took data from raw capture
-        through to modeling, validation, and a clear write-up.
-      </p>
+    <!-- COVER: name, target roles, contact, short narrative. Kept compact so the projects sit near the top. -->
+    <section class="cover wrap">
+      <div class="cover-main">
+        <p class="pill"><span class="dot"></span> Open to data analyst &amp; data/research engineering roles</p>
+        <h1 class="name">Jimmy Gu</h1>
+        <p class="tagline">I take messy real-world data from <em>raw capture</em> to a <em>tested result</em>.</p>
+        <p class="lead">
+          I'm a physics (biophysics) student at WashU, graduating in December 2026. My projects start with instrument sweeps,
+          donation exports, stock prices and image sets, and end with a result checked against a baseline: coil theory, a published study,
+          the S&amp;P&nbsp;500. I report what didn't hold up, too.
+        </p>
+        <div class="actions cover-actions">
+          <a href="mailto:g.jimmy@wustl.edu" class="btn">g.jimmy@wustl.edu</a>
+          <a href="https://www.linkedin.com/in/jimmy-yufan-gu" class="btn btn-ghost" target="_blank" rel="noopener">LinkedIn ↗</a>
+          <a href="https://github.com/ygu60" class="btn btn-ghost" target="_blank" rel="noopener">GitHub ↗</a>
+          <a href="assets/Jimmy_Gu_Resume.pdf" class="btn btn-ghost" target="_blank" rel="noopener">Resume ↗</a>
+          <a href="assets/Jimmy_Gu_Portfolio.pdf" class="btn btn-ghost" download>Download PDF portfolio ↓</a>
+        </div>
+        <p class="print-only print-contact">g.jimmy@wustl.edu · linkedin.com/in/jimmy-yufan-gu · github.com/ygu60 · ygu60.github.io</p>
+      </div>
+
+      <dl class="glance" aria-label="At a glance">
+        <div><dt>Education</dt><dd>B.A. Physics (Biophysics), Biology minor<span>Washington University in St. Louis · GPA 3.83 · Dec 2026</span></dd></div>
+        <div><dt>Leadership</dt><dd>Cadet, U.S. Air Force Academy<span>Superintendent's List · coordinated mission planning for 100+ cadets</span></dd></div>
+        <div><dt>Founder</dt><dd>Journey of Hope nonprofit<span>Ran it for 10+ years · $15,000+ raised · up to 20 volunteers</span></dd></div>
+        <div><dt>Tools</dt><dd>Python and MATLAB<span>pandas · SciPy · scikit-learn · PyTorch · Streamlit · Git</span></dd></div>
+      </dl>
     </section>
 
-    <!-- WORK -->
+    <!-- PROJECTS: each card links to its full project page (projects/<slug>.html) -->
     <section id="work" class="wrap">
       <div class="work-head">
-        <h2>Selected work</h2>
-        <div class="filters" role="tablist" aria-label="Filter projects">
-          <button class="chip active" data-filter="all">All</button>
-          <button class="chip" data-filter="analytics">Analytics</button>
-          <button class="chip" data-filter="engineering">Engineering</button>
-          <button class="chip" data-filter="ml">ML &amp; Research</button>
+        <div>
+          <h2>Selected projects</h2>
+          <p class="work-sub">Each page leads with the outcome, then my role, the motivation, results against the goal and what I learned, with technical details last. It also marks which parts were teammates' work.</p>
         </div>
       </div>
 
+      <div class="work-tools">
+        <div class="filters" role="group" aria-label="Filter projects by topic">
+          <button type="button" class="chip active" data-filter="all" aria-pressed="true">All</button>
+          <button type="button" class="chip" data-filter="analytics" aria-pressed="false">Analytics &amp; dashboards</button>
+          <button type="button" class="chip" data-filter="engineering" aria-pressed="false">Data engineering</button>
+          <button type="button" class="chip" data-filter="stats" aria-pressed="false">ML &amp; statistics</button>
+          <button type="button" class="chip" data-filter="instrumentation" aria-pressed="false">Instrumentation</button>
+          <button type="button" class="chip" data-filter="imaging" aria-pressed="false">Image processing</button>
+        </div>
+        <label class="search">
+          <span class="visually-hidden">Search projects by skill</span>
+          <input type="search" id="skill-q" list="skill-list" placeholder="Search a skill, e.g. pandas" autocomplete="off" />
+        </label>
+        <datalist id="skill-list">
+          <option value="Python"></option><option value="pandas"></option><option value="NumPy"></option><option value="SciPy"></option>
+          <option value="scikit-learn"></option><option value="PyTorch"></option><option value="statsmodels"></option><option value="matplotlib"></option>
+          <option value="Streamlit"></option><option value="Altair"></option><option value="Plotly"></option><option value="MATLAB"></option>
+          <option value="PyVISA"></option><option value="Git"></option><option value="LaTeX"></option><option value="Data cleaning"></option>
+          <option value="Unit testing"></option><option value="Walk-forward validation"></option><option value="Permutation testing"></option>
+          <option value="Time series"></option><option value="Cohort analysis"></option><option value="Churn analysis"></option>
+          <option value="Geocoding"></option><option value="Dashboard design"></option><option value="Signal processing"></option>
+          <option value="Nonlinear fitting"></option><option value="Uncertainty analysis"></option><option value="Feature engineering"></option>
+          <option value="Image processing"></option><option value="LASSO regression"></option><option value="Correlation analysis"></option>
+          <option value="Segmentation"></option><option value="FFT"></option>
+        </datalist>
+      </div>
+      <p class="work-status" id="work-status" aria-live="polite">Showing all 4 projects</p>
+
       <div class="grid">
-        <!-- Quant -->
-        <article class="card featured" data-cats="engineering ml analytics">
-          <button class="card-media" data-open="dlg-quant" aria-label="Open Quant Alpha case study">
-            <img src="assets/img/quant-equity.png" alt="Out-of-sample equity curves comparing strategies to SPY" loading="lazy" />
-            <span class="metric"><strong>0.44</strong> out-of-sample Sharpe</span>
-          </button>
+        <!-- 1. Quant -->
+        <article class="card" data-cats="analytics engineering stats"
+          data-skills="Python, pandas, NumPy, scikit-learn, PyTorch, statsmodels, SciPy, matplotlib, Git, Walk-forward validation, Permutation testing, Unit testing, Data cleaning, Time series, Backtesting, Machine learning, Finance, AI-assisted development">
+          <figure class="card-media">
+            <div class="card-img">
+              <img src="assets/img/quant-alpha/risk-return-map.png" width="1600" height="1178"
+                alt="Scatter chart of the main strategies tested, out-of-sample Sharpe ratio against worst drawdown. An arrow path runs from the raw reversal signal to a risk-managed version to the final strategy (Sharpe 0.44, worst drop 16.8%), marked with a star. SPY buy-and-hold sits higher at 0.85 with a 33.7% drop; rejected strategies sit near or below zero." />
+            </div>
+            <figcaption>The main strategies tested, scored out of sample. Gray points were rejected.</figcaption>
+          </figure>
           <div class="card-body">
-            <p class="kicker">Backtesting pipeline · 2026</p>
-            <h3>Quant Alpha Research Pipeline</h3>
-            <p>A walk-forward backtesting pipeline tested on 10 years of real market data. It checks every result for overfitting, and I documented the strategies that didn't hold up alongside the ones that did.</p>
-            <ul class="tags"><li>Python</li><li>pandas</li><li>scikit-learn</li><li>PyTorch</li><li>Testing</li></ul>
+            <p class="kicker">Quant research · Solo · 2026</p>
+            <h3><a class="card-link" href="projects/quant-alpha.html">Stress-testing trading strategies until only one survived</a></h3>
+            <dl class="card-stats">
+              <div><dt>0.44</dt><dd>Sharpe ratio (return per unit of risk), out of sample</dd></div>
+              <div><dt>−16.8%</dt><dd>Worst drop, half the S&amp;P&nbsp;500's</dd></div>
+            </dl>
+            <p class="card-outcome">I led a study of trading ideas on 10 years of real stock prices. Pairs trading, calendar effects and every ML model failed; a risk-controlled reversal strategy survived but still earned less than the index.</p>
+            <ul class="tags"><li>Python</li><li>pandas</li><li>scikit-learn</li><li>Walk-forward validation</li><li>Unit testing</li></ul>
             <div class="actions">
-              <button class="btn" data-open="dlg-quant">Case study</button>
+              <span class="btn" aria-hidden="true">Project page →</span>
               <a class="btn btn-ghost" href="https://github.com/ygu60/quant-alpha-research" target="_blank" rel="noopener">Code ↗</a>
             </div>
+            <p class="print-only card-url">ygu60.github.io/projects/quant-alpha.html</p>
           </div>
         </article>
 
-        <!-- CYC -->
-        <article class="card" data-cats="analytics">
-          <button class="card-media dash-mock" data-open="dlg-cyc" aria-label="Open donor dashboard case study">
-            <span class="dm-head">Donor Insights</span>
-            <span class="dm-kpis"><i><b>1,000+</b>donors</i><i><b>Returning</b>vs. new</i></span>
-            <span class="dm-bars"><i style="--h:38%"></i><i style="--h:62%"></i><i style="--h:50%"></i><i style="--h:78%"></i><i style="--h:66%"></i><i style="--h:92%"></i><i style="--h:58%"></i></span>
-            <span class="metric"><strong>1,000+</strong> donors analyzed</span>
-          </button>
+        <!-- 2. Donor dashboard -->
+        <article class="card" data-cats="analytics engineering"
+          data-skills="Python, pandas, matplotlib, seaborn, Streamlit, Altair, Plotly, pgeocode, openpyxl, Data cleaning, Cohort analysis, Churn analysis, Retention analysis, Pareto analysis, Geocoding, Dashboard design, Data visualization, Client work, Nonprofit">
+          <figure class="card-media">
+            <div class="card-img">
+              <img src="assets/img/donor-dashboard/home-upload.png" width="1600" height="1040"
+                alt="Home page of the donor dashboard running on synthetic demo data: a GiveButter file uploader holding two files named SYNTHETIC_demo_donations, links to the analysis pages, and a cumulative fundraising-over-time chart with a selected 2024 range labeled +39.6%." />
+            </div>
+            <figcaption>The dashboard's Home page, running on <b>synthetic demo data</b>, not the client's.</figcaption>
+          </figure>
           <div class="card-body">
-            <p class="kicker">Client project · Nonprofit</p>
-            <h3>Donor Insights Dashboard</h3>
-            <p>A multi-page Streamlit app for a St. Louis crime victim advocacy nonprofit. Staff upload their donation exports and get retention, cohort, and campaign analytics.</p>
-            <ul class="tags"><li>Streamlit</li><li>pandas</li><li>Altair</li></ul>
+            <p class="kicker">Client analytics · Consult Your Community · 2025</p>
+            <h3><a class="card-link" href="projects/donor-dashboard.html">A donor dashboard that shows a crime victim nonprofit which donors come back</a></h3>
+            <dl class="card-stats">
+              <div><dt>6</dt><dd>Analyses from one upload: trend, retention, cohorts, top donors, map, campaigns</dd></div>
+              <div><dt>3 yrs</dt><dd>Of campaign totals compared in my first-pass analysis (2022 to 2024)</dd></div>
+            </dl>
+            <p class="card-outcome">I analyzed a St. Louis crime victim nonprofit's donor records, then built a five-page Streamlit dashboard that staff can refresh by dragging in each new GiveButter export. It fully covers the brief's donor-ranking goal and partly covers segmentation, tracking and outreach.</p>
+            <ul class="tags"><li>Python</li><li>pandas</li><li>Streamlit</li><li>Cohort analysis</li><li>Data cleaning</li></ul>
             <div class="actions">
-              <button class="btn" data-open="dlg-cyc">Case study</button>
+              <span class="btn" aria-hidden="true">Project page →</span>
               <a class="btn btn-ghost" href="https://github.com/ygu60/CYC2025SP" target="_blank" rel="noopener">Code ↗</a>
             </div>
+            <p class="print-only card-url">ygu60.github.io/projects/donor-dashboard.html</p>
           </div>
         </article>
 
-        <!-- ODMR -->
-        <article class="card" data-cats="engineering">
-          <button class="card-media contain" data-open="dlg-odmr" aria-label="Open ODMR case study">
-            <img src="assets/img/odmr-ridgeline.png" alt="ODMR spectra splitting as magnetic field increases" loading="lazy" />
-            <span class="metric"><strong>~10,000</strong> sweeps captured</span>
-          </button>
+        <!-- 3. ODMR -->
+        <article class="card" data-cats="engineering stats instrumentation"
+          data-skills="Python, PyVISA, SCPI, Instrument automation, NumPy, SciPy, matplotlib, Signal processing, Data QC, Data cleaning, Nonlinear fitting, Curve fitting, Uncertainty analysis, Git, LaTeX, Physics, AI-assisted development">
+          <figure class="card-media">
+            <div class="card-img">
+              <img src="assets/img/odmr-pipeline/hero-fits.png" width="1440" height="1240"
+                alt="Stacked resonance spectra at 0, 0.2, 0.4, 0.6 and 0.8 amps of coil current: a double dip at zero field splits into 6 and then 8 shallower lines, and the fitted curve tracks the measured data in every row, with R squared from 0.97 to 0.99." />
+            </div>
+            <figcaption>Real averaged spectra (gray) and my automatic fits (blue) as the field grows.</figcaption>
+          </figure>
           <div class="card-body">
-            <p class="kicker">Instrumentation · 2026</p>
-            <h3>ODMR Acquisition &amp; Analysis Pipeline</h3>
-            <p>Python code that controls lab instruments directly, captures thousands of sweeps, cleans the signal, and fits the resulting spectra automatically.</p>
-            <ul class="tags"><li>PyVISA</li><li>SciPy</li><li>Signal processing</li></ul>
+            <p class="kicker">Instrumentation · Team of 2 · 2026</p>
+            <h3><a class="card-link" href="projects/odmr-pipeline.html">Turning 10,000 noisy sweeps into a working diamond magnetic-field sensor</a></h3>
+            <dl class="card-stats">
+              <div><dt>10,000</dt><dd>Sweeps captured, 85% kept after automated QC</dd></div>
+              <div><dt>R² ≥ 0.97</dt><dd>Fit quality in all 10 field conditions</dd></div>
+            </dl>
+            <p class="card-outcome">With a lab partner I built a magnetic-field sensor from a diamond, a laser and microwaves. My Python pipeline drives the instruments, rejects glitched sweeps and fits every spectrum, turning a few-percent dip in glow into field readings checked against the coil's predicted field.</p>
+            <ul class="tags"><li>Python</li><li>PyVISA / SCPI</li><li>SciPy</li><li>Data QC</li><li>Nonlinear fitting</li></ul>
             <div class="actions">
-              <button class="btn" data-open="dlg-odmr">Case study</button>
+              <span class="btn" aria-hidden="true">Project page →</span>
               <a class="btn btn-ghost" href="https://github.com/ygu60/ODMR-Phys322-Sweep-Control" target="_blank" rel="noopener">Code ↗</a>
             </div>
+            <p class="print-only card-url">ygu60.github.io/projects/odmr-pipeline.html</p>
           </div>
         </article>
 
-        <!-- Neuroaesthetics -->
-        <article class="card featured reverse" data-cats="ml analytics">
-          <button class="card-media" data-open="dlg-neuro" aria-label="Open neuroaesthetics case study">
-            <img src="assets/img/seg-graphcut.png" alt="Graph-cut segmentation of a mosaic artwork" loading="lazy" />
-            <span class="metric"><strong>982</strong> image dataset</span>
-          </button>
-          <div class="card-body">
-            <p class="kicker">Undergraduate research · 2025</p>
-            <h3>Predicting Aesthetic Ratings of Mosaic Art</h3>
-            <p>I built an image dataset, extracted segmentation features, and used LASSO regression to find which features predict how people rate mosaic art.</p>
-            <ul class="tags"><li>LASSO</li><li>SAM2</li><li>MATLAB</li></ul>
-            <div class="actions">
-              <button class="btn" data-open="dlg-neuro">Case study</button>
+        <!-- 4. Mosaic aesthetics -->
+        <article class="card" data-cats="stats imaging"
+          data-skills="MATLAB, C++ MEX, Image processing, Computer vision, Feature engineering, Data validation, Benchmarking, Correlation analysis, LASSO regression, Regression, Segmentation, Graph cuts, SAM2, FFT, Spectral analysis, Reproducibility, Research">
+          <figure class="card-media">
+            <div class="card-img">
+              <img src="assets/img/mosaic-aesthetics/feature-anatomy.jpg" width="1000" height="880"
+                alt="A medieval mosaic of an angel's head by Pietro Cavallini beside a histogram of its pixel lightness, with six statistics marked (min, median, mean, IQR, max, percentile range) and a summary: 18 statistics times 9 channels, plus 3 spectral centroids, plus 7 hue-harmony models, equals 172 features per image." />
             </div>
+            <figcaption>What my extractor computes for one channel. Art: P. Cavallini (public domain).</figcaption>
+          </figure>
+          <div class="card-body">
+            <p class="kicker">Neuroaesthetics research · WashU · 2025</p>
+            <h3><a class="card-link" href="projects/mosaic-aesthetics.html">Measuring why people like mosaic art: a benchmarked 982-image feature pipeline</a></h3>
+            <dl class="card-stats">
+              <div><dt>982</dt><dd>Mosaic images turned into a feature table</dd></div>
+              <div><dt>172</dt><dd>Features per image: color, brightness, detail</dd></div>
+            </dl>
+            <p class="card-outcome">I wrote the MATLAB feature extractor for a WashU study of why people like mosaics and benchmarked it against a published study of paintings. It reproduces the original's average color and brightness measures, not yet its segment-shape features. On 70 pilot images, the team ranked features against ratings with my table.</p>
+            <ul class="tags"><li>MATLAB</li><li>Feature engineering</li><li>Image processing</li><li>Benchmarking</li><li>LASSO regression</li></ul>
+            <div class="actions">
+              <span class="btn" aria-hidden="true">Project page →</span>
+            </div>
+            <p class="print-only card-url">ygu60.github.io/projects/mosaic-aesthetics.html</p>
           </div>
         </article>
+      </div>
+
+      <div class="work-empty" id="work-empty" hidden>
+        <p>No project matches that yet. Try Python, pandas, SciPy or MATLAB.</p>
+        <button type="button" class="btn btn-ghost btn-sm" id="work-reset">Show all projects</button>
       </div>
     </section>
 
@@ -130,23 +227,30 @@
       <div class="about-text">
         <h2>About</h2>
         <p>
-          I came to data work through physics. That means building the instruments, writing the pipeline, and deciding whether the result is real.
-          Before WashU I was a cadet at the U.S. Air Force Academy, and I founded and ran a nonprofit for over ten years.
+          I came to data work through physics. That means building the setup, writing the pipeline, and deciding whether the result is real.
+          Before WashU I was a cadet at the U.S. Air Force Academy, where I coordinated mission planning for 100+ cadets.
+          Before that, I founded a St. Louis nonprofit, Journey of Hope, and ran it for over ten years.
           I like work where careful analysis leads to a real decision.
         </p>
+        <ul class="habits">
+          <li><strong>Clean first.</strong> A data-derived threshold kept 85% of 10,000 instrument sweeps; the stock pipeline dropped 7 of 30 tickers and logged why.</li>
+          <li><strong>Check against a baseline.</strong> 37 walk-forward test quarters, 83 features from a published study, and the coil's predicted field.</li>
+          <li><strong>Report what failed.</strong> ML models that didn't beat a shuffled-label noise test, and dashboard bugs I found on a re-test.</li>
+        </ul>
         <div class="skills">
-          <span>Python</span><span>SQL</span><span>pandas</span><span>NumPy / SciPy</span><span>scikit-learn</span><span>PyTorch</span>
-          <span>Streamlit</span><span>matplotlib / Altair</span><span>MATLAB</span><span>Excel</span><span>Git</span><span>LaTeX</span>
-          <span>Regression</span><span>Cross-validation</span><span>Hypothesis testing</span><span>Curve fitting</span>
+          <span>Python</span><span>pandas</span><span>NumPy / SciPy</span><span>scikit-learn</span><span>PyTorch</span><span>statsmodels</span>
+          <span>Streamlit</span><span>matplotlib / Altair / Plotly</span><span>MATLAB</span><span>PyVISA / SCPI</span><span>Git</span><span>LaTeX</span>
+          <span>Data cleaning &amp; QC</span><span>Walk-forward validation</span><span>Permutation testing</span><span>LASSO regression</span>
+          <span>Nonlinear curve fitting</span><span>Uncertainty analysis</span><span>Cohort &amp; churn analysis</span>
         </div>
       </div>
 
       <ol class="timeline">
-        <li><span class="t-date">2024 – 2026</span><div><h4>Consultant</h4><p>Consult Your Community, WashU</p></div></li>
-        <li><span class="t-date">2025</span><div><h4>Undergraduate Researcher</h4><p>Neuroaesthetics Lab, WashU</p></div></li>
+        <li class="edu"><span class="t-date">Dec 2026</span><div><h4>B.A. Physics (Biophysics), Biology minor</h4><p>Washington University in St. Louis · GPA 3.83 · Dean's List</p></div></li>
+        <li><span class="t-date">2024 – 2026</span><div><h4>Consultant</h4><p>Consult Your Community, WashU chapter</p></div></li>
+        <li><span class="t-date">2025</span><div><h4>Undergraduate Researcher</h4><p>Neuroaesthetics research, WashU</p></div></li>
         <li><span class="t-date">2023 – 2024</span><div><h4>Cadet · Superintendent's List</h4><p>U.S. Air Force Academy</p></div></li>
         <li><span class="t-date">2012 – 2023</span><div><h4>Founder &amp; Board Member</h4><p>Journey of Hope nonprofit · $15K+ raised</p></div></li>
-        <li class="edu"><span class="t-date">Dec 2026</span><div><h4>B.A. Physics (Biophysics), Biology minor</h4><p>Washington University in St. Louis · GPA 3.83</p></div></li>
       </ol>
     </section>
 
@@ -159,110 +263,79 @@
           <a href="mailto:g.jimmy@wustl.edu" class="btn btn-light">g.jimmy@wustl.edu</a>
           <a href="https://www.linkedin.com/in/jimmy-yufan-gu" class="btn btn-outline-light" target="_blank" rel="noopener">LinkedIn ↗</a>
           <a href="https://github.com/ygu60" class="btn btn-outline-light" target="_blank" rel="noopener">GitHub ↗</a>
+          <a href="assets/Jimmy_Gu_Resume.pdf" class="btn btn-outline-light" target="_blank" rel="noopener">Resume ↗</a>
+          <a href="assets/Jimmy_Gu_Portfolio.pdf" class="btn btn-outline-light" download>Download PDF portfolio ↓</a>
         </div>
       </div>
     </section>
   </main>
 
-  <footer class="wrap footer">© 2026 Jimmy Gu · Outside of work: running about 50 miles a week, judo, and BJJ.</footer>
-
-  <!-- CASE STUDIES -->
-  <dialog id="dlg-quant" class="case">
-    <button class="close" aria-label="Close">×</button>
-    <p class="kicker">Backtesting pipeline</p>
-    <h3>Quant Alpha Research Pipeline</h3>
-    <img src="assets/img/quant-equity.png" alt="Out-of-sample equity curves" />
-    <div class="kpis"><div><strong>0.44</strong><span>OOS Sharpe</span></div><div><strong>0.91</strong><span>Prob. Sharpe</span></div><div><strong>−16.8%</strong><span>Max drawdown</span></div><div><strong>10 yrs</strong><span>Real data</span></div></div>
-    <h4>Problem</h4>
-    <p>Can a simple statistical strategy for a small account show an edge that survives honest out-of-sample testing and transaction costs?</p>
-    <h4>What I built</h4>
-    <ul>
-      <li>A data layer that pulls and caches price history from Yahoo Finance, then cleans up delistings, short histories, and reassigned tickers.</li>
-      <li>A vectorized backtest engine with a cost model and look-ahead protection, plus walk-forward validation that tunes parameters on training data only.</li>
-      <li>A composable risk overlay: volatility targeting, exposure caps, and a drawdown kill switch. I found and fixed two bugs in it along the way.</li>
-      <li>Unit tests for the engine, the risk overlay, and feature causality.</li>
-    </ul>
-    <h4>Results</h4>
-    <ul>
-      <li>Best strategy: short-term reversal with a regime gate. I cross-checked the gate across two lookback windows and against an independent Markov-switching model before trusting it.</li>
-      <li>Rejected a variant that looked great at one lookback and flipped negative at another, because it was overfit.</li>
-      <li>Tested ML signals (Ridge, Random Forest, Gradient Boosting, and a PyTorch MLP) with purged CV and a shuffled-label permutation test. None beat the noise floor, and I documented them as negative results.</li>
-    </ul>
-    <a class="btn" href="https://github.com/ygu60/quant-alpha-research" target="_blank" rel="noopener">View code &amp; research memo ↗</a>
-  </dialog>
-
-  <dialog id="dlg-cyc" class="case">
-    <button class="close" aria-label="Close">×</button>
-    <p class="kicker">Client project · Consult Your Community</p>
-    <h3>Crime Victim Center Donor Insights Dashboard</h3>
-    <div class="kpis"><div><strong>1,000+</strong><span>Donors</span></div><div><strong>4</strong><span>Analysis views</span></div><div><strong>0</strong><span>Code needed by staff</span></div></div>
-    <h4>Problem</h4>
-    <p>The nonprofit had years of donation exports but no easy way to see who was giving, who came back, and which campaigns worked.</p>
-    <h4>What I built</h4>
-    <ul>
-      <li>A multi-page Streamlit app. Staff upload raw donation files, and the data flows into four views: <strong>Retention</strong>, <strong>Cohort Analysis</strong>, <strong>Donor Demographics</strong>, and <strong>Fundraising Evaluation</strong>.</li>
-      <li>Retention logic that groups gifts by donor to separate new donors from returning ones, with interactive Altair charts.</li>
-    </ul>
-    <h4>Impact</h4>
-    <p>I found trends in donor behavior and turned them into outreach recommendations for the client.</p>
-    <a class="btn" href="https://github.com/ygu60/CYC2025SP" target="_blank" rel="noopener">View code ↗</a>
-  </dialog>
-
-  <dialog id="dlg-odmr" class="case">
-    <button class="close" aria-label="Close">×</button>
-    <p class="kicker">Instrumentation · Data pipeline</p>
-    <h3>ODMR Acquisition &amp; Analysis Pipeline</h3>
-    <img src="assets/img/odmr-ridgeline.png" alt="ODMR ridgeline plot" class="tall" />
-    <div class="kpis"><div><strong>~10k</strong><span>Sweeps</span></div><div><strong>10</strong><span>Field conditions</span></div><div><strong>2→6</strong><span>Lines resolved</span></div></div>
-    <h4>Problem</h4>
-    <p>Measure how a magnetic field splits the resonance of NV centers in diamond. The signal is a fluorescence dip of just a few percent, buried in noise.</p>
-    <h4>What I built</h4>
-    <ul>
-      <li>Acquisition code that controls a Keysight oscilloscope and function generator over PyVISA/SCPI. It captures about 1,000 triggered sweeps per condition.</li>
-      <li>A processing stage that filters, despikes, calibrates voltage to frequency, and averages the sweeps.</li>
-      <li>An adaptive N-Lorentzian fit that detects peaks automatically. It replaced two fixed-model fits that failed, and I documented why.</li>
-      <li>A read-only diagnostic tool that debugs trigger problems without risking an acquisition run.</li>
-    </ul>
-    <h4>Output</h4>
-    <p>Reproducible figures (small multiples, ridgelines, 3D terrain), a full uncertainty analysis, and a LaTeX paper.</p>
-    <a class="btn" href="https://github.com/ygu60/ODMR-Phys322-Sweep-Control" target="_blank" rel="noopener">View code ↗</a>
-  </dialog>
-
-  <dialog id="dlg-neuro" class="case">
-    <button class="close" aria-label="Close">×</button>
-    <p class="kicker">Undergraduate research · WashU</p>
-    <h3>Predicting Aesthetic Ratings of Mosaic Art</h3>
-    <img src="assets/img/seg-graphcut.png" alt="Graph-cut segmentation of a mosaic" />
-    <div class="kpis"><div><strong>982</strong><span>Images</span></div><div><strong>60+</strong><span>Semantic features</span></div><div><strong>2026</strong><span>Symposium abstract</span></div></div>
-    <h4>Question</h4>
-    <p>Which measurable features of a mosaic predict how beautiful people find it?</p>
-    <h4>What I did</h4>
-    <ul>
-      <li>Built a dataset of 982 images with statistical and segmentation features at several levels.</li>
-      <li>Compared SAM2 and kernel graph cuts for extracting features at the tile level and at the semantic level.</li>
-      <li>Used LASSO regression, entropy measures, and spectral analysis to find which features predict ratings.</li>
-    </ul>
-    <h4>Output</h4>
-    <p>An abstract presented at the Spring 2026 Undergraduate Research Symposium.</p>
-  </dialog>
+  <footer class="wrap footer">
+    <p>© 2026 Jimmy Gu · <a href="mailto:g.jimmy@wustl.edu">g.jimmy@wustl.edu</a> · <a href="https://www.linkedin.com/in/jimmy-yufan-gu" target="_blank" rel="noopener">LinkedIn ↗</a> · <a href="https://github.com/ygu60" target="_blank" rel="noopener">GitHub ↗</a> · <a href="assets/Jimmy_Gu_Portfolio.pdf" download>PDF portfolio ↓</a></p>
+    <p>Outside of work: running about 50 miles a week, judo, and BJJ.</p>
+  </footer>
 
   <script>
-    // Project filters
-    const chips = document.querySelectorAll('.chip');
-    const cards = document.querySelectorAll('.card');
-    chips.forEach(chip => chip.addEventListener('click', () => {
-      chips.forEach(c => c.classList.toggle('active', c === chip));
-      const f = chip.dataset.filter;
-      cards.forEach(card => card.hidden = f !== 'all' && !card.dataset.cats.split(' ').includes(f));
-    }));
+    // Project filters: a topic chip AND an optional skill search. A card shows when it matches both.
+    // The state is kept in the URL (?topic=...&skill=...), so a filtered view can be shared as a link;
+    // project-page skill tags link here the same way.
+    (() => {
+      const chips = [...document.querySelectorAll('#work .chip')];
+      const cards = [...document.querySelectorAll('#work .card')];
+      const q = document.getElementById('skill-q');
+      const status = document.getElementById('work-status');
+      const empty = document.getElementById('work-empty');
+      const topics = chips.map(c => c.dataset.filter);
+      let topic = 'all';
 
-    // Case study dialogs
-    document.querySelectorAll('[data-open]').forEach(el =>
-      el.addEventListener('click', () => document.getElementById(el.dataset.open).showModal()));
-    document.querySelectorAll('dialog').forEach(d => {
-      d.querySelector('.close').addEventListener('click', () => d.close());
-      d.addEventListener('click', e => { if (e.target === d) d.close(); });
-    });
+      // Search only a card's skill list and its visible text, not the hidden print-only URL line
+      // (every card has "ygu60.github.io/...", which would make terms like "git" match everything).
+      const haystack = new Map(cards.map(card => [card, (card.dataset.skills + ' ' +
+        [...card.querySelectorAll('.kicker, h3, .card-outcome, .tags')].map(e => e.textContent).join(' ')).toLowerCase()]));
+
+      const syncUrl = () => {
+        const p = new URLSearchParams();
+        if (topic !== 'all') p.set('topic', topic);
+        if (q.value.trim()) p.set('skill', q.value.trim());
+        const qs = p.toString();
+        try { history.replaceState(null, '', location.pathname + (qs ? '?' + qs : '') + location.hash); } catch (e) { /* file:// */ }
+      };
+
+      const apply = () => {
+        const term = q.value.trim().toLowerCase();
+        let shown = 0;
+        cards.forEach(card => {
+          const inTopic = topic === 'all' || card.dataset.cats.split(' ').includes(topic);
+          const show = inTopic && (term === '' || haystack.get(card).includes(term));
+          card.hidden = !show;
+          if (show) shown++;
+        });
+        status.textContent = shown === cards.length ? `Showing all ${shown} projects`
+          : `Showing ${shown} of ${cards.length} projects`;
+        empty.hidden = shown > 0;
+        syncUrl();
+      };
+
+      const setTopic = t => {
+        topic = t;
+        chips.forEach(c => {
+          const on = c.dataset.filter === t;
+          c.classList.toggle('active', on);
+          c.setAttribute('aria-pressed', String(on));
+        });
+        apply();
+      };
+
+      chips.forEach(chip => chip.addEventListener('click', () => setTopic(chip.dataset.filter)));
+      q.addEventListener('input', apply);
+      document.getElementById('work-reset').addEventListener('click', () => { q.value = ''; setTopic('all'); });
+
+      const params = new URLSearchParams(location.search);
+      const t0 = params.get('topic');
+      const s0 = params.get('skill') || params.get('q');
+      if (s0) q.value = s0;
+      setTopic(t0 && topics.includes(t0) ? t0 : 'all');
+    })();
   </script>
 </body>
 </html>
